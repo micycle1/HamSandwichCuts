@@ -1,13 +1,12 @@
 package control;
 
-import hamSanApp.HamSanAlg;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JLabel;
 
+import hamSanApp.HamSanAlg;
 import view.HamSanApplet;
 import view.LinePanel;
 import view.PointPanel;
@@ -39,21 +38,21 @@ public class DoAlgButtonListener implements ActionListener {
 			hsa.doAlg();
 			int step = hsa.step;
 			switch (step) {
-			case 1:
-				l.setText("step 1: divided in intervals");
-				break;
-			case 2:
-				l.setText("step 2: found interval with odd intersection property");
-				break;
-			case 3:
-				l.setText("step 3: constructed trapeze");
-				break;
-			case 4:
-				l.setText("zoomed in on trapeze");
-				lp.followTrapeze();
-			case 0:
-				l.setText("step 4: removed lines outside the trapeze");
-				break;
+				case 1 :
+					l.setText("step 1: divided in intervals");
+					break;
+				case 2 :
+					l.setText("step 2: found interval with odd intersection property");
+					break;
+				case 3 :
+					l.setText("step 3: constructed trapeze");
+					break;
+				case 4 :
+					l.setText("zoomed in on trapeze");
+					lp.followTrapeze();
+				case 0 :
+					l.setText("step 4: removed lines outside the trapeze");
+					break;
 			}
 			if (hsa.getVisualPoints().size() == 0) {
 				l.setText("step 0: place points");

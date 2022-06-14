@@ -8,10 +8,10 @@ import javax.swing.JCheckBox;
 import view.LinePanel;
 
 public class CrossingsListener implements ActionListener {
-	
+
 	private LinePanel lp;
 	private JCheckBox myCheckBox;
-	
+
 	public CrossingsListener(JCheckBox cb, LinePanel lp) {
 		this.myCheckBox = cb;
 		this.lp = lp;

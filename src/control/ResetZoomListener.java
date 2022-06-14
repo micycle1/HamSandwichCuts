@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 import view.LinePanel;
 
 public class ResetZoomListener implements ActionListener {
-	
+
 	private LinePanel lp;
-	
+
 	public ResetZoomListener(LinePanel lp) {
 		this.lp = lp;
 	}
@@ -17,8 +17,8 @@ public class ResetZoomListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		doStuff();
 	}
-	
-	public void doStuff(){
+
+	public void doStuff() {
 		lp.setMinAndMax(-10, -10, 10, 10);
 		lp.repaint();
 	}

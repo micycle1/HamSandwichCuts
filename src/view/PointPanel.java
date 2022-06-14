@@ -1,7 +1,5 @@
 package view;
 
-import hamSanApp.HamSanAlg;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -11,6 +9,8 @@ import java.awt.geom.Point2D;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import hamSanApp.HamSanAlg;
 
 public class PointPanel extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -201,10 +201,8 @@ public class PointPanel extends JPanel implements MouseListener, MouseMotionList
 	public void mouseDragged(MouseEvent e) {
 		if (highlightedPoint != null && addingAllowed) {
 			h.removeLine(highlightedPoint.getMyPoint());
-			highlightedPoint.setXY(new Point2D.Double(e.getX(), this.getHeight() - e.getY()), xmin, ymin, xmax, ymax,
-					this.getSize());
-			highlightedPoint.setMyPoint(h.addLine(highlightedPoint.getA(), highlightedPoint.getB(),
-					highlightedPoint.isBlue()));
+			highlightedPoint.setXY(new Point2D.Double(e.getX(), this.getHeight() - e.getY()), xmin, ymin, xmax, ymax, this.getSize());
+			highlightedPoint.setMyPoint(h.addLine(highlightedPoint.getA(), highlightedPoint.getB(), highlightedPoint.isBlue()));
 			refreshAll();
 		}
 	}

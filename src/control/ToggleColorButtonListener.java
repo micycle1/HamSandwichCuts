@@ -12,19 +12,18 @@ public class ToggleColorButtonListener implements ActionListener {
 
 	private PointPanel myPointPanel;
 	private JLabel clabel;
-	
+
 	public ToggleColorButtonListener(PointPanel pp, JLabel clab) {
 		this.myPointPanel = pp;
 		this.clabel = clab;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		myPointPanel.togglePointType();
-		if(myPointPanel.getCurrentType()==PointType.BLUE){
+		if (myPointPanel.getCurrentType() == PointType.BLUE) {
 			clabel.setText("<html>Color: <font color='blue'>blue</font> - space to change</html>");
-		}
-		else{
+		} else {
 			clabel.setText("<html>Color: <font color='red'>red</font> - space to change</html>");
 		}
 	}

@@ -1,8 +1,5 @@
 package view;
 
-import hamSanApp.Crossing;
-import hamSanApp.HamSanAlg;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,6 +13,9 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
+
+import hamSanApp.Crossing;
+import hamSanApp.HamSanAlg;
 
 //import java.util.Date;
 
@@ -189,10 +189,10 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 				int ytr = (int) VisualPoint.bToY(h.trapeze.topright, ymin, ymax, this.getSize());
 				double dx1 = VisualPoint.xToA(0, xmin, xmax, this.getSize());
 				int x1 = (int) VisualPoint.aToX(dx1, xmin, xmax, this.getSize());
-				int ytl = (int) VisualPoint.bToY(h.trapeze.topright + (dx1 - h.trapeze.right) * h.trapeze.topslope,
-						ymin, ymax, this.getSize());
-				int ybl = (int) VisualPoint.bToY(h.trapeze.botright + (dx1 - h.trapeze.right) * h.trapeze.botslope,
-						ymin, ymax, this.getSize());
+				int ytl = (int) VisualPoint.bToY(h.trapeze.topright + (dx1 - h.trapeze.right) * h.trapeze.topslope, ymin, ymax,
+						this.getSize());
+				int ybl = (int) VisualPoint.bToY(h.trapeze.botright + (dx1 - h.trapeze.right) * h.trapeze.botslope, ymin, ymax,
+						this.getSize());
 
 				g2d.drawLine(x1, this.getHeight() - ybl, x2, this.getHeight() - ybr);
 				g2d.drawLine(x2, this.getHeight() - ybr, x2, this.getHeight() - ytr);
@@ -206,10 +206,10 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 				int ytl = (int) VisualPoint.bToY(h.trapeze.topleft, ymin, ymax, this.getSize());
 				double dx2 = VisualPoint.xToA(this.getSize().width, xmin, xmax, this.getSize());
 				int x2 = (int) VisualPoint.aToX(dx2, xmin, xmax, this.getSize());
-				int ytr = (int) VisualPoint.bToY(h.trapeze.topleft + (dx2 - h.trapeze.left) * h.trapeze.topslope, ymin,
-						ymax, this.getSize());
-				int ybr = (int) VisualPoint.bToY(h.trapeze.botleft + (dx2 - h.trapeze.left) * h.trapeze.botslope, ymin,
-						ymax, this.getSize());
+				int ytr = (int) VisualPoint.bToY(h.trapeze.topleft + (dx2 - h.trapeze.left) * h.trapeze.topslope, ymin, ymax,
+						this.getSize());
+				int ybr = (int) VisualPoint.bToY(h.trapeze.botleft + (dx2 - h.trapeze.left) * h.trapeze.botslope, ymin, ymax,
+						this.getSize());
 				g2d.drawLine(x1, this.getHeight() - ytl, x1, this.getHeight() - ybl);
 				g2d.drawLine(x1, this.getHeight() - ybl, x2, this.getHeight() - ybr);
 
@@ -256,8 +256,9 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 	}
 
 	public void followTrapeze() {
-		if (h.trapeze == null)
+		if (h.trapeze == null) {
 			return;
+		}
 		if (!h.trapeze.bounded) {
 			if (h.trapeze.openleft) {
 				double top = h.trapeze.topright;
@@ -316,8 +317,9 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		double zoom = zoomFactor + e.getPreciseWheelRotation() / 100;
-		if (zoom < 0)
+		if (zoom < 0) {
 			zoom = 0.0000000000001;
+		}
 		/*
 		 * if (zoom > 10) zoom = 10;
 		 */
@@ -351,75 +353,75 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 	public void mousePressed(MouseEvent e) {
 		currentMouseButton = e.getButton();
 		switch (mode) {
-		case ZOOM_RECTANGLE:
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				corner1 = new Point2D.Double(e.getX(), e.getY());
-			} else { // dragging
-				initialX = e.getX();
-				initialY = e.getY();
-			}
-			break;
-		case DRAG:
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				initialX = e.getX();
-				initialY = e.getY();
-			} else { // zooming rectangle
-				corner1 = new Point2D.Double(e.getX(), e.getY());
-			}
+			case ZOOM_RECTANGLE :
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					corner1 = new Point2D.Double(e.getX(), e.getY());
+				} else { // dragging
+					initialX = e.getX();
+					initialY = e.getY();
+				}
+				break;
+			case DRAG :
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					initialX = e.getX();
+					initialY = e.getY();
+				} else { // zooming rectangle
+					corner1 = new Point2D.Double(e.getX(), e.getY());
+				}
 		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		switch (mode) {
-		case ZOOM_RECTANGLE:
-			if (currentMouseButton == MouseEvent.BUTTON1) {
-				corner2 = new Point2D.Double(e.getX(), e.getY());
-				this.repaint();
-			} else { // dragging
-				int dx = e.getX() - initialX;
-				int dy = e.getY() - initialY;
+			case ZOOM_RECTANGLE :
+				if (currentMouseButton == MouseEvent.BUTTON1) {
+					corner2 = new Point2D.Double(e.getX(), e.getY());
+					this.repaint();
+				} else { // dragging
+					int dx = e.getX() - initialX;
+					int dy = e.getY() - initialY;
 
-				initialX += dx;
-				initialY += dy;
-				corner1 = new Point2D.Double(-dx, -dy);
-				corner2 = new Point2D.Double(this.getWidth() - dx, this.getHeight() - dy);
-				doZoom();
-				this.repaint();
-			}
-			break;
-		case DRAG:
-			if (currentMouseButton == MouseEvent.BUTTON1) {
-				int dx = e.getX() - initialX;
-				int dy = e.getY() - initialY;
+					initialX += dx;
+					initialY += dy;
+					corner1 = new Point2D.Double(-dx, -dy);
+					corner2 = new Point2D.Double(this.getWidth() - dx, this.getHeight() - dy);
+					doZoom();
+					this.repaint();
+				}
+				break;
+			case DRAG :
+				if (currentMouseButton == MouseEvent.BUTTON1) {
+					int dx = e.getX() - initialX;
+					int dy = e.getY() - initialY;
 
-				initialX += dx;
-				initialY += dy;
-				corner1 = new Point2D.Double(-dx, -dy);
-				corner2 = new Point2D.Double(this.getWidth() - dx, this.getHeight() - dy);
-				doZoom();
-				this.repaint();
-			} else { // zooming rectangle
-				corner2 = new Point2D.Double(e.getX(), e.getY());
-				this.repaint();
-			}
+					initialX += dx;
+					initialY += dy;
+					corner1 = new Point2D.Double(-dx, -dy);
+					corner2 = new Point2D.Double(this.getWidth() - dx, this.getHeight() - dy);
+					doZoom();
+					this.repaint();
+				} else { // zooming rectangle
+					corner2 = new Point2D.Double(e.getX(), e.getY());
+					this.repaint();
+				}
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		switch (mode) {
-		case ZOOM_RECTANGLE:
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				corner2 = new Point2D.Double(e.getX(), e.getY());
-				doZoom();
-			}
-			break;
-		case DRAG:
-			if (e.getButton() == MouseEvent.BUTTON3) { // zoom rectangle
-				corner2 = new Point2D.Double(e.getX(), e.getY());
-				doZoom();
-			}
+			case ZOOM_RECTANGLE :
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					corner2 = new Point2D.Double(e.getX(), e.getY());
+					doZoom();
+				}
+				break;
+			case DRAG :
+				if (e.getButton() == MouseEvent.BUTTON3) { // zoom rectangle
+					corner2 = new Point2D.Double(e.getX(), e.getY());
+					doZoom();
+				}
 		}
 		currentMouseButton = -1;
 	}

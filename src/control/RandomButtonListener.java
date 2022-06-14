@@ -1,7 +1,5 @@
 package control;
 
-import hamSanApp.HamSanAlg;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -9,6 +7,7 @@ import java.util.Random;
 
 import javax.swing.JComboBox;
 
+import hamSanApp.HamSanAlg;
 import view.HamSanApplet;
 import view.LinePanel;
 import view.PointPanel;
@@ -24,8 +23,7 @@ public class RandomButtonListener implements ActionListener {
 	private JComboBox<String> c;
 	private HamSanApplet applet;
 
-	public RandomButtonListener(HamSanAlg hsa, LinePanel lp, PointPanel pp,
-			JComboBox<String> c, HamSanApplet applet) {
+	public RandomButtonListener(HamSanAlg hsa, LinePanel lp, PointPanel pp, JComboBox<String> c, HamSanApplet applet) {
 		r = new Random();
 		r.setSeed(1);
 		this.hsa = hsa;
@@ -39,8 +37,6 @@ public class RandomButtonListener implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		doStuff();
 	}
-	
-	
 
 	public void doStuff() {
 		if (!hsa.done) {
@@ -58,12 +54,10 @@ public class RandomButtonListener implements ActionListener {
 
 			} else if (c.getSelectedItem() == "random points (square)") {
 				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
-					hsa.addLine((r.nextDouble() * 10) - 5,
-							(r.nextDouble() * 15) - 7.5, false);
+					hsa.addLine((r.nextDouble() * 10) - 5, (r.nextDouble() * 15) - 7.5, false);
 				}
 				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
-					hsa.addLine((r.nextDouble() * 10) - 5,
-							(r.nextDouble() * 15) - 7.5, true);
+					hsa.addLine((r.nextDouble() * 10) - 5, (r.nextDouble() * 15) - 7.5, true);
 				}
 
 			} else if (c.getSelectedItem() == "single random points") {
@@ -145,7 +139,7 @@ public class RandomButtonListener implements ActionListener {
 			} else if (c.getSelectedItem() == "vertical solution") {
 				// Vertikale LÃ¶sung
 				PointType type = pp.getCurrentType();
-				
+
 				pp.setCurrentType(PointType.BLUE);
 				for (int i = 4; i > 0; i--) {
 					pp.adddoublePoint(-1, i);
@@ -189,15 +183,13 @@ public class RandomButtonListener implements ActionListener {
 					for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
 						double phi = r.nextDouble() * Math.PI * 2;
 						double rad = r.nextDouble() * 5;
-						hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad,
-								false);
+						hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, false);
 					}
 				} else {
 					for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
 						double phi = r.nextDouble() * Math.PI * 2;
 						double rad = r.nextDouble() * 5;
-						hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad,
-								true);
+						hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, true);
 					}
 				}
 
@@ -249,17 +241,16 @@ public class RandomButtonListener implements ActionListener {
 				pp.adddoublePoint(1, 0);
 				pp.adddoublePoint(1, -1);
 				pp.adddoublePoint(1, -2);
-			} 
-			else if (c.getSelectedItem() == "multiple solutions(1)") {
+			} else if (c.getSelectedItem() == "multiple solutions(1)") {
 				// Erste Einfügereihenfolge
 				pp.setCurrentType(PointType.BLUE);
 				for (int i = -3; i >= -7; i--) {
 					pp.adddoublePoint(1, i);
 				}
-				
+
 				PointType type = pp.getCurrentType();
 				pp.setCurrentType(PointType.RED);
-				for (int i = 0; i >-4 ; i--) {
+				for (int i = 0; i > -4; i--) {
 					pp.adddoublePoint(-1, i);
 				}
 
@@ -267,13 +258,13 @@ public class RandomButtonListener implements ActionListener {
 				for (int i = 1; i >= 0; i--) {
 					pp.adddoublePoint(-2, i);
 				}
-				
+
 				pp.setCurrentType(PointType.BLUE);
 				for (int i = 2; i > 0; i--) {
 					pp.adddoublePoint(-1, i);
 				}
 				pp.setCurrentType(PointType.BLUE);
-			//	pp.adddoublePoint(-1, 9);
+				// pp.adddoublePoint(-1, 9);
 				pp.setCurrentType(PointType.BLUE);
 				pp.adddoublePoint(-1, 8);
 				pp.adddoublePoint(-1, 7);
@@ -281,7 +272,7 @@ public class RandomButtonListener implements ActionListener {
 				for (int i = 6; i > 5; i--) {
 					pp.adddoublePoint(-1, i);
 				}
-				
+
 				pp.setCurrentType(PointType.BLUE);
 				for (int i = 7; i >= 5; i--) {
 					if (i % 2 == 0) {
@@ -303,68 +294,66 @@ public class RandomButtonListener implements ActionListener {
 				}
 				pp.adddoublePoint(2, 2);
 				pp.setCurrentType(PointType.RED);
-				pp.adddoublePoint(-3,8);
+				pp.adddoublePoint(-3, 8);
 				pp.setCurrentType(PointType.RED);
 				pp.adddoublePoint(4, 9);
 				pp.setCurrentType(type);
 
-
 			} else if (c.getSelectedItem() == "multiple solutions(2)") {
-				//zweite Einfügereihenfolge					
-					
-					PointType type = pp.getCurrentType();
-			
-					
-					pp.setCurrentType(PointType.RED);
-					for (int i = -3; i<=0 ; i++) {
-						pp.adddoublePoint(-1, i);
-					}
+				// zweite Einfügereihenfolge
 
-					pp.setCurrentType(PointType.BLUE);
-					for (int i = 1; i >= 0; i--) {
-						pp.adddoublePoint(-2, i);
-					}
-					pp.setCurrentType(PointType.RED);
-					for (int i = 6; i < 7; i++) {
-						pp.adddoublePoint(-1, i);
-					}
+				PointType type = pp.getCurrentType();
 
-					pp.setCurrentType(PointType.BLUE);
-					for (int i = 5; i <= 7; i++) {
-						if (i % 2 == 0) {
-							pp.setCurrentType(PointType.RED);
-						} else {
-							pp.setCurrentType(PointType.BLUE);
-						}
-						pp.adddoublePoint(4, i);
+				pp.setCurrentType(PointType.RED);
+				for (int i = -3; i <= 0; i++) {
+					pp.adddoublePoint(-1, i);
+				}
+
+				pp.setCurrentType(PointType.BLUE);
+				for (int i = 1; i >= 0; i--) {
+					pp.adddoublePoint(-2, i);
+				}
+				pp.setCurrentType(PointType.RED);
+				for (int i = 6; i < 7; i++) {
+					pp.adddoublePoint(-1, i);
+				}
+
+				pp.setCurrentType(PointType.BLUE);
+				for (int i = 5; i <= 7; i++) {
+					if (i % 2 == 0) {
+						pp.setCurrentType(PointType.RED);
+					} else {
+						pp.setCurrentType(PointType.BLUE);
 					}
-					pp.setCurrentType(PointType.BLUE);
-					for (int i = -3; i >= -7; i--) {
-						pp.adddoublePoint(1, i);
+					pp.adddoublePoint(4, i);
+				}
+				pp.setCurrentType(PointType.BLUE);
+				for (int i = -3; i >= -7; i--) {
+					pp.adddoublePoint(1, i);
+				}
+				pp.setCurrentType(PointType.RED);
+				for (int i = -4; i <= -2; i++) {
+					if (i % 2 == 0) {
+						pp.setCurrentType(PointType.RED);
+					} else {
+						pp.setCurrentType(PointType.BLUE);
 					}
-					pp.setCurrentType(PointType.RED);
-					for (int i = -4; i <= -2; i++) {
-						if (i % 2 == 0) {
-							pp.setCurrentType(PointType.RED);
-						} else {
-							pp.setCurrentType(PointType.BLUE);
-						}
-						pp.adddoublePoint(-4, i);
-					}
-					pp.adddoublePoint(2, 2);
-					pp.setCurrentType(PointType.RED);
-					pp.setCurrentType(PointType.BLUE);
-					for (int i = 1; i <=2; i++) {
-						pp.adddoublePoint(-1, i);
-					}
-					pp.setCurrentType(PointType.RED);
-					pp.adddoublePoint(-3,8);
-					pp.setCurrentType(PointType.RED);
-					pp.adddoublePoint(4, 9);
-					pp.setCurrentType(PointType.BLUE);
-					pp.adddoublePoint(-1, 8);
-					pp.adddoublePoint(-1, 7);
-					pp.setCurrentType(type);
+					pp.adddoublePoint(-4, i);
+				}
+				pp.adddoublePoint(2, 2);
+				pp.setCurrentType(PointType.RED);
+				pp.setCurrentType(PointType.BLUE);
+				for (int i = 1; i <= 2; i++) {
+					pp.adddoublePoint(-1, i);
+				}
+				pp.setCurrentType(PointType.RED);
+				pp.adddoublePoint(-3, 8);
+				pp.setCurrentType(PointType.RED);
+				pp.adddoublePoint(4, 9);
+				pp.setCurrentType(PointType.BLUE);
+				pp.adddoublePoint(-1, 8);
+				pp.adddoublePoint(-1, 7);
+				pp.setCurrentType(type);
 
 			} else if (c.getSelectedItem() == "unbounded trapeze") {
 				pp.setCurrentType(PointType.BLUE);
@@ -375,7 +364,6 @@ public class RandomButtonListener implements ActionListener {
 				pp.adddoublePoint(0.9, 1.8);
 			}
 
-			
 			List<VisualPoint> vpoints = hsa.getVisualPoints();
 			pp.setVisualPoints(vpoints);
 			lp.setVisualPoints(vpoints);

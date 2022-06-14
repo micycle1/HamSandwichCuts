@@ -1,13 +1,12 @@
 package control;
 
-import hamSanApp.HamSanAlg;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JLabel;
 
+import hamSanApp.HamSanAlg;
 import view.HamSanApplet;
 import view.LinePanel;
 import view.PointPanel;
@@ -45,7 +44,7 @@ public class DoAllgButtonListener implements ActionListener {
 			while (!h.done) {
 				h.doAlg();
 			}
-			if (h.validSol(false) == false) {
+			if (!h.validSol(false)) {
 				l.setText("uh oh");
 			} else {
 				l.setText("found valid solution");

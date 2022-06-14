@@ -1,12 +1,11 @@
 package control;
 
-import hamSanApp.HamSanAlg;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import hamSanApp.HamSanAlg;
 import view.HamSanApplet;
 import view.LinePanel;
 import view.PointPanel;
@@ -19,7 +18,7 @@ public class ResetButtonListener implements ActionListener {
 	private LinePanel lp;
 	private JLabel l;
 	private HamSanApplet applet;
-	
+
 	public ResetButtonListener(HamSanAlg hsa, PointPanel pp, LinePanel lp, JLabel label, HamSanApplet hamSanApplet) {
 		this.hsa = hsa;
 		this.pp = pp;
@@ -27,7 +26,7 @@ public class ResetButtonListener implements ActionListener {
 		this.l = label;
 		this.applet = hamSanApplet;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		doStuff();

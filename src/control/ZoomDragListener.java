@@ -9,15 +9,15 @@ import view.Mode;
 public class ZoomDragListener implements KeyListener {
 
 	private LinePanel linePanel;
-	
+
 	public ZoomDragListener(LinePanel linePanel) {
 		this.linePanel = linePanel;
 	}
-	
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

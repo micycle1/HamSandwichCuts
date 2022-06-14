@@ -8,7 +8,7 @@ import javax.swing.JCheckBox;
 import view.LinePanel;
 
 public class DeletedListener implements ActionListener {
-	
+
 	private JCheckBox myCheckbox;
 	private LinePanel lp;
 

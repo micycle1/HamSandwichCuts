@@ -18,55 +18,55 @@ public class ToggleListener implements KeyListener {
 	private OldpointsResetButtonListener oldresBut;
 	private JLabel clabel;
 	private ResetZoomListener resetz;
-	
-	public ToggleListener(JLabel colourlabel,PointPanel pp,DoAlgButtonListener doalg,DoAllgButtonListener doallg,ResetButtonListener res,RandomButtonListener ran, OldpointsResetButtonListener oldpointresBut, ResetZoomListener rz) {
+
+	public ToggleListener(JLabel colourlabel, PointPanel pp, DoAlgButtonListener doalg, DoAllgButtonListener doallg,
+			ResetButtonListener res, RandomButtonListener ran, OldpointsResetButtonListener oldpointresBut, ResetZoomListener rz) {
 		myPointPanel = pp;
 		algBut = doalg;
 		allgBut = doallg;
 		resBut = res;
-		oldresBut=oldpointresBut;
+		oldresBut = oldpointresBut;
 		randBut = ran;
-		clabel=colourlabel;
+		clabel = colourlabel;
 		resetz = rz;
 	}
-	
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {	
+	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			myPointPanel.togglePointType();
-			if(myPointPanel.getCurrentType()==PointType.BLUE){
+			if (myPointPanel.getCurrentType() == PointType.BLUE) {
 				clabel.setText("<html>Color: <font color='blue'>blue</font> - space to change</html>");
-			}
-			else{
+			} else {
 				clabel.setText("<html>Color: <font color='red'>red</font> - space to change</html>");
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_N) {
-			//next step
+			// next step
 			algBut.doStuff();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A) {
-			//all steps
+			// all steps
 			allgBut.doStuff();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_R) {
-			//reset
+			// reset
 			resBut.doStuff();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_P) {
-			//add Points
+			// add Points
 			randBut.doStuff();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
-			//reset but keep old points
+			// reset but keep old points
 			oldresBut.doStuff();
 		}
-		if (e.getKeyCode() == KeyEvent.VK_V ) {
-			//reset zoom
+		if (e.getKeyCode() == KeyEvent.VK_V) {
+			// reset zoom
 			resetz.doStuff();
 		}
 	}
@@ -74,7 +74,7 @@ public class ToggleListener implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
