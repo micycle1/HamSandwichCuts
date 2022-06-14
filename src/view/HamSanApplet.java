@@ -3,15 +3,18 @@ package view;
 import hamSanApp.HamSanAlg;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.util.Locale;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -43,12 +46,24 @@ public class HamSanApplet extends JApplet {
 	private JButton startAlgButton;
 	private JButton doAllgButton;
 	
+	public static void main(String[] args) {
+		Locale.setDefault(Locale.US);
+		JFrame frame = new JFrame("Han Sandwich Cuts");
+		HamSanApplet a = new HamSanApplet();
+		a.init();
+		frame.getContentPane().add((Component) a, "Center");
+		frame.setDefaultCloseOperation(3);
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
 	public void paint(Graphics g) {
 		super.paint(g);
 		this.requestFocus();
 	}
 
 	public void init() {
+		System.out.println("init");
 		this.setPreferredSize(new Dimension(1024,600));
 		this.setLayout(new BorderLayout());
 		
