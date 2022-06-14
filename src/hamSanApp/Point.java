@@ -1,34 +1,33 @@
 package hamSanApp;
 
 /**
- * Diese Klasse stellt einen Punkt/eine Linie (beides) dar und hat einige
- * hilfsfunktionen
- * 
+ * This class represents a point/line (both) and has some helper functions
+ *
  * @author fabian
  *
  */
 public class Point {
 
-	public double a; // erste Variable
-	public double b; // zweite Variable
+	public double a; // first variable
+	public double b; // second variable
 	public final int i; // index
-	static int index = 0; // damit jeder Point einen eindeutigen index hat.
+	static int index = 0; // so that each point has a unique index.
 
 	/**
-	 * Konstruktor
-	 * 
-	 * @param x erste variable
-	 * @param y zweite Variale
+	 * constructor
+	 *
+	 * @param x first variable
+	 * @param y second variable
 	 */
 	Point(double x, double y) {
 		a = x;
 		b = y;
 		i = Point.index;
-		index += 1;
+		index++;
 	}
 
 	/**
-	 * Diese Methode wird aufgerufen, wenn man z.B. println(irgendein Point) aufruft
+	 * This method is called when you call e.g. println(any point).
 	 */
 	@Override
 	public String toString() {
@@ -36,35 +35,35 @@ public class Point {
 	}
 
 	/**
-	 * zum ausgeben als Punkt (nicht wichtig, hüchstens zu debug-zwecken)
+	 * to output as a dot (not important, only for debugging purposes)
 	 */
 	public void repr_point() {
 		System.out.println("point at " + a + " " + b);
 	}
 
 	/**
-	 * zum ausgeben als Gerade (nicht wichtig, hüchstens zu debug-zwecken)
+	 * to output as a straight line (not important, only for debugging purposes)
 	 */
 	public void repr_line() {
 		System.out.println("line: y= " + a + "x + " + b);
 	}
 
 	/**
-	 * wertet die Gerade an einem Punkt aus.
-	 * 
-	 * @param x Auswertungspunkt
-	 * @return errechneter y wert
+	 * evaluates the straight line at a point.
+	 *
+	 * @param x evaluation point
+	 * @return calculated y value
 	 */
 	public double eval(double x) {
 		return a * x + b;
 	}
 
 	/**
-	 * Schneidet die gerade mit einer anderen Gerade. KEINE GERADEN MIT GLEICHER
-	 * STEIGUNG SCHNEIDEN!
-	 * 
-	 * @param other Die andere gerade
-	 * @return Die x-koordinate des Schnittes
+	 * Intersects the straight with another straight. NO STRAIGHTS WITH EQUAL CUT
+	 * SLOPE!
+	 *
+	 * @param other The other one right now
+	 * @return The x-coordinate of the cut
 	 */
 	public double cross(Point other) {
 		if (a == other.a) {
@@ -74,21 +73,21 @@ public class Point {
 	}
 
 	/**
-	 * errechnet eine determinante. nicht wichtig.
+	 * calculates a determinant. not important.
 	 */
 	public static double det3(double a11, double a12, double a13, double a21, double a22, double a23, double a31, double a32, double a33) {
 		return a11 * a22 * a33 + a12 * a23 * a31 + a13 * a21 * a32 - a11 * a23 * a32 - a12 * a21 * a33 - a13 * a22 * a31;
 	}
 
 	/**
-	 * errechnet eine determinante. nicht wichtig.
+	 * calculates a determinant. not important.
 	 */
 	public static double det2(double a11, double a12, double a21, double a22) {
 		return a11 * a22 - a12 * a21;
 	}
 
 	/**
-	 * nicht funktionierende version von operation 1. lüsch mich.
+	 * non-working version of operation 1. delete me.
 	 */
 	public static int op1(Point i, Point j, Point k) {
 		double Delta1;
@@ -109,14 +108,13 @@ public class Point {
 	}
 
 	/**
-	 * gibt zurück, ob sich die Geraden i und j oberhalb der Geraden k schneiden
-	 * oder unterhalb ist nicht fertig implementiert! (brauchen wir glaub ich auch
-	 * nicht)
-	 * 
-	 * @param i erste schnittgerade
-	 * @param j zweite schnittgerade
-	 * @param k vergleichsgerade
-	 * @return 1 wenn überhalb, -1 wenn unterhalb
+	 * returns whether lines i and j intersect above line k or below is not fully
+	 * implemented! (I think we need it too Not)
+	 *
+	 * @param i first line of intersection
+	 * @param j second line of intersection
+	 * @param k comparison line
+	 * @return 1 if above, -1 if below
 	 */
 	public static int op1naive(Point i, Point j, Point k) {
 		// calculate the crossing point of i and j:
@@ -133,26 +131,25 @@ public class Point {
 			// -> handle
 			return 0;
 		} else {
-			// they don't cross
-			// -> handle
-
+		// they don't cross
+		// -> handle
 			return -2;
 		}
 	}
 
 	/**
-	 * errechnet, ob sich i und j links von k und l schneiden oder nicht. i,j,k und
-	 * l müssen sich unterscheiden!
-	 * 
-	 * @return -1 wenn sich ij links von kl schneiden, 1 sonst
-	 * @throws sollte eigentlich nicht, nur wenn du's verkackst
+	 * computes whether i and j intersect to the left of k and l or not. i,j,k and l
+	 * must differ!
+	 *
+	 * @return -1 if ij intersect to the left of kl, 1 otherwise
+	 * @throws really shouldn't, only if you screw it up
 	 */
-	// liefert bei Vergleich von kreuzungen im Unendlichen gerade inverses Ergebnis.
-	// Problem: Was, wenn i und j parallel sind sowie k und l, aber i und l
-	// verschiedene Steiungen haben
-	// welche Reihenfolge wollen wir dann im Unendlichen haben?
+	// returns an even inverse result when comparing crossings at infinity.
+	// Problem: What if i and j are parallel, and k and l are parallel, but i and l are
+	// have different slopes
+	// then what order do we want at infinity?
 	public static int op2naive(Point i, Point j, Point k, Point l) throws Exception {
-		// if ij crosses left of kl, return -1, if right return +1
+	// if ij crosses left of kl, return -1, if right return +1
 		if ((i.equals(k) && j.equals(l)) || (i.equals(l) && j.equals(k))) {
 			return 0;
 		}
@@ -162,20 +159,21 @@ public class Point {
 		}
 		double diff1 = i.a - j.a;
 		double diff2 = k.a - l.a;
-		if (diff1 != 0 && diff2 != 0) {// haben keine Kreuzungen im unendlichen
+		if (diff1 != 0 && diff2 != 0) { // have no crossings at infinity
 			double x1 = i.cross(j);
 			double x2 = k.cross(l);
 			if (x1 < x2) {
 				return 1;
 			} else if (x1 > x2) {
 				return -1;
-			} else { // Kreuzungen liegen Ã¼bereinander
-						// find the smallest index of the four
-						// TODO: evtl Test, ob Behantdlung fÃ¼r nur 3 verschiedene Geraden als Eingebe
-						// passt
-						// der kleinste Index kommt nur einmal vor
+			} else { // Intersections are on top of each other
+				// find the smallest index of the four
+				// TODO: Possibly test whether treatment for only 3 different straight lines as input
+				// fits
+				// the smallest index occurs only once
 				int s = (int) Math.signum(x1);
 				if (((i.i < j.i) && (i.i < k.i) && (i.i < l.i)) || (smallindex == i.i) && (i.i != k.i) && (i.i != l.i)) {
+
 					if (diff1 > 0) {
 						return -1 * s;
 					} else {
@@ -257,7 +255,7 @@ public class Point {
 					return -1;
 				}
 			}
-			// sanity:
+// sanity:
 			if (diff1 == 0 && diff2 == 0) {
 				if ((i.i < j.i && i.i < k.i && i.i < l.i) || (j.i < i.i && j.i < k.i && j.i < l.i)) {
 					if (k.i < l.i) {
@@ -293,26 +291,12 @@ public class Point {
 
 	}
 
-	/*
-	 * else { if (diff1 != 0){ if (k.i < l.i) { if (k.b > l.b) {return 1;} else
-	 * {return -1;} } else { //k.i > l.i if (k.b > l.b) {return -1;} else {return
-	 * 1;} } } if (diff2 != 0) { if (i.i < j.i) { if (i.b > j.b) {return -1;} else
-	 * {return 1;} } else { //i.i > j.i if (i.b > j.b) {return 1;} else {return -1;}
-	 * } } //sanity: if (diff1 == 0 && diff2 == 0) { if ((i.i < j.i && i.i < k.i &&
-	 * i.i < l.i) || (j.i < i.i && j.i < k.i && j.i < l.i)) { if (k.i < l.i) { if
-	 * (k.b < l.b) {return -1;} else {return 1;} } else { if (k.b < l.b) {return 1;}
-	 * else {return -1;} } } else { // k oder l haben kleinsten index if (i.i < j.i)
-	 * { if (i.b < j.b) {return 1;} else {return -1;} } else { if (i.b < j.b)
-	 * {return -1;} else {return 1;} } } }
-	 * 
-	 * throw new Exception("uh, something went wrong comparing");
-	 */
 	/**
 	 * dritte operation, brauchen wir warscheinlich nicht
 	 */
 	public static int op3naive(Point i, Point j, Point k, Point l, Point m) {
-		// sanity: make sure i,j,k,l pairwise distinct,
-		// even need to do? make sure we need this.
+// sanity: make sure i,j,k,l pairwise distinct,
+// even need to do? make sure we need this.
 		return 0;
 	}
 }

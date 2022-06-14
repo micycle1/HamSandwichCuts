@@ -9,6 +9,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 public class VisualPoint {
+	
 	private double a;
 	private double b;
 	private PointType type;

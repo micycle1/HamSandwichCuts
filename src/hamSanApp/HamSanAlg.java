@@ -16,52 +16,52 @@ import view.VisualPoint;
  */
 public class HamSanAlg {
 
-	public List<Point> lBlue; // hier werden die vom Alg. berücksichtigten Blauen Linien gespeichert
-	public List<Point> lRed; // hier werden die vom Alg. berücksichtigten Roten Linien gespeichert
-	public List<Point> lBlueDel; // Del für deleted
-	public List<Point> lRedDel; // hier werden die nicht berücksichtigten linien gespeichert
-	public List<Point> firstlRed;// Punktemengen zu Beginn des Algorithmus
+	public List<Point> lBlue; // the blue lines taken into account by the algorithm are saved here
+	public List<Point> lRed; // the red lines taken into account by the algorithm are stored here
+	public List<Point> lBlueDel; // Del for deleted
+	public List<Point> lRedDel; // the lines not taken into account are stored here
+	public List<Point> firstlRed;// Sets of points at the start of the algorithm
 	public List<Point> firstlBlue;
 	public boolean leftborder; //
-	public boolean rightborder; // bools, die wahr sind, falls der Momentane betrachtungsbereich nach
-								// links/rechts beschrünkt ist
+	public boolean rightborder; // bools that are true if the current scope is after
+	// is left/right constrained
 	public double leftb; //
-	public double rightb; // der linke und Rechte Rand des betrachtungsbereiches
+	public double rightb; // the left and right edges of the viewing area
 	int levelBlue; //
-	int levelRed; // die wievielte linie von oben ist die gesuchte medianlinie?
-	boolean firstRun; // ist der Algorithmus schonmal etwas gelaufen (künnen wir noch linien
-						// veründern?
-	public boolean done; // ist der Algorithmus fertig?
-	boolean colorSwap; // müssen wir die Farben gerade vertauscht zeichnen?
-	public boolean verticalSol; // ist die Lüsung eine Vertikale Linie?
-	public double verticalSolPos; // position der vertikalen Lüsung
-	public Point solution; // position der nicht-vertikalen Lüsung
-	public double[] borders; // positionen der grenzen zwischen streifen.
-	// konvention: borders[i] ist der linke rand von dem i-ten streifen und die
-	// streifen sind halboffen, linker punkt ist drin.
-	public List<Crossing> crossings;// hier werden die Kreuzungen gespeichert;
+	int levelRed; // how many lines from the top is the median line you are looking for?
+	boolean firstRun; // Has the algorithm ever run a bit (can we still use lines
+	// change?
+	public boolean done; // is the algorithm ready?
+	boolean colorSwap; // do we just have to draw the colors reversed?
+	public boolean verticalSol; // is the solution a vertical line?
+	public double verticalSolPos; // position of the vertical solution
+	public Point solution; // position of the non-vertical solution
+	public double[] borders; // positions of borders between stripes.
+	// convention: borders[i] is the left edge of the i-th stripe and the
+	// strips are half open, left dot is inside.
+	public List<Crossing> crossings;// the crossings are stored here;
 	boolean DEBUG = true;
-	public Trapeze trapeze; // das trapez (zum zeichnen)
+	public Trapeze trapeze; // the trapezoid (to draw)
 	public int minband; //
-	public int maxband; // zur binüren suche auf den intervallen(bündern)
-	public int step; // in welchem shritt sind wir?
-						// 0: Ausgangssituation
-						// 1: Intervalle Eingeteilt
-						// 2: Richtiges Intervall rausgesucht
-						// 3: Trapez konstruiert
+	public int maxband; // to search for binaries on the intervals (bundles)
+	public int step; // what step are we in?
+	// 0: Initial situation
+	// 1: Intervals Scheduled
+	// 2: Correct interval selected
+	// 3: trapezoid constructed
 
-	boolean leftsetthistime = false; //
+	boolean leftsetthistime = false;
 	boolean rightsetthistime = false; // used for going from step 2 to 3.
-	boolean leftmannyC = false;// wird auf true gesetzt, falls linker bzw rechter Randbereich bei
-								// Intervalleinteilung
-	boolean rightmannyC = false;// aus mehr als (alpfa * Crossings.size()) kreuzungen im negativ bzw
-								// positivUnendlichen besteht
+	boolean leftmannyC = false;// set to true if left or right border area at
+	// interval division
+	boolean rightmannyC = false;// from more than (alpfa * Crossings.size()) crossings in the negative or
+	// positive infinity
 
 	final double alpha = 1.0d / 32.0d; //
-	final double eps = 1.0d / 8.0d; // Konstanten für den Alg
+	final double eps = 1.0d / 8.0d; // constants for the alg
 
 	/**
-	 * Konstruktor, macht nichts besonderes.
+	 * Constructor, doesn't do anything special.
 	 */
 	public HamSanAlg() {
 		init();
@@ -132,7 +132,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * hide a line from the algorithm. it is then drawn separately.
+	 * Hide a line from the algorithm. it is then drawn separately.
 	 * 
 	 * @param l
 	 */
@@ -146,7 +146,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * * Function that returns a point near position (x,y).
+	 * Function that returns a point near position (x,y).
 	 * 
 	 * @param tolerance how far (x,y) can be from the point
 	 * @return the dot
@@ -172,10 +172,10 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Funktion, die eine Gerade zurückgibt, der in der nühe der position (x,y) ist.
-	 * 
-	 * @param tolerance wie weit entfernt (x,y) von dem Punkt sein darf;
-	 * @return der Punkt
+	 * Function that returns a straight line near position (x,y) is.
+	 *
+	 * @param tolerance how far (x,y) can be from the point;
+	 * @return the dot
 	 */
 	public Point findLine(double x, double y, double tolerance) {
 		Point best = null;
@@ -238,15 +238,14 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * gibt die y-Koordinate der level'ten linie von Oben an der stelle x aus Dabei
-	 * nimmt Level Werte zwischen 1 und lBlue.size()+1 bzw l.size()+1 an!
-	 * 
-	 * @param x     die x-Koordinate
-	 * @param blue  von den Blauen oder Roten linien?
-	 * @param level wievielte linie von oben?
-	 * @return der y-Wert
+	 * outputs the y-coordinate of the level'th line from above at the x position
+	 * takes level values between 1 and lBlue.size()+1 or l.size()+1!
+	 *
+	 * @param x     the x coordinate
+	 * @param blue  from the Blue or Red Lines?
+	 * @param level how many lines from the top?
+	 * @return the y value
 	 */
-
 	public double levelPos(double x, boolean blue, int level) {
 		LineComparator x_evaluation = new LineComparator(x);
 		List<Point> locList;
@@ -260,11 +259,10 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Ist an der stelle die Blaue Medianlinie hüher als die Rote?
-	 * 
-	 * @param x die Stelle
-	 * @return 1, falls blau oben, -1 falls rot, 0 falls wir einen Schnittpunkt
-	 *         haben.
+	 * Is the blue median line higher than the red at this point?
+	 *
+	 * @param x the position
+	 * @return 1 if blue above, -1 if red, 0 if we have an intersection to have.
 	 */
 	public int blueTop(double x) {
 		// is the blue level higher than the red level at x?
@@ -303,10 +301,10 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Funktion, die errechnet, ob im unbeschrünkten bereich links die blaue
-	 * medianlinie über der Roten ist
-	 * 
-	 * @return true falls ja
+	 * Function that calculates whether the blue links in the unrestricted area
+	 * median line is above the red.
+	 *
+	 * @return true if yes
 	 */
 	public boolean blueTopLeft() { // TODO Testme
 		LineComparator2 c = new LineComparator2();
@@ -526,14 +524,14 @@ public class HamSanAlg {
 										// this once
 				}
 
-				if (lBlue.size() == 0) { // only red lines.
+				if (lBlue.isEmpty()) { // only red lines.
 					double rL = levelPos(0, false, (levelRed));
 					solution = new Point(0, rL);
 					done = true;
 					firstRun = false;
 					return;
 				}
-				if (lRed.size() == 0) { // only red lines.
+				if (lRed.isEmpty()) { // only red lines.
 					double bL = levelPos(0, true, (levelBlue));
 					solution = new Point(0, bL);
 					done = true;
@@ -717,7 +715,7 @@ public class HamSanAlg {
 							// have positive infinity
 
 						else {// Don't have crossing at positive infinity at the beginning of the
-							// interval division
+								// interval division
 							System.out.println("have many crossings in positive infinity");
 							rightmannyC = true;
 							while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
@@ -887,7 +885,7 @@ public class HamSanAlg {
 				step++;
 
 				if (DEBUG) {
-					System.out.println("Trapez konstruiert");
+					System.out.println("Trapezoid constructed");
 				}
 				borders = new double[64];
 				minband = 0;
@@ -927,7 +925,7 @@ public class HamSanAlg {
 				step = 0;
 
 				if (DEBUG) {
-					System.out.println(deleted + " Linien ausserhalb des intervalls entfernt.");
+					System.out.println(deleted + " Removed out-of-interval lines.");
 				}
 				if (deleted == 0) { // ya done goof'd
 					done = true;

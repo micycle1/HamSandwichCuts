@@ -15,9 +15,9 @@ import java.util.Comparator;
  *
  */
 public class LineComparator implements Comparator<Point> {
-	
+
 	/**
-	 * @param x Stelle zur Auswertung
+	 * @param x pos to evalulate
 	 */
 	public LineComparator(double x) {
 		super();

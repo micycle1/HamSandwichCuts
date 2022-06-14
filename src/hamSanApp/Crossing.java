@@ -1,20 +1,19 @@
 package hamSanApp;
 
 /**
- * diese Klasse stellt die Kreuzung zweier Geraden dar und ist hauptsüchlich
- * zum sortieren da.
- * 
+ * Represents the intersection of two straight lines and is principal used for
+ * sorting.
+ *
  * @author fabian
  *
  */
 public class Crossing implements Comparable<Crossing> {
-	
-//	die beiden Linien:
-	public Point line1; // Linie mit kleinerem
-	public Point line2; // Linie mit größerem Index
+
+	public Point line1; // line with smaller index
+	public Point line2; // Larger index line
 
 	/**
-	 * Konstruktor
+	 * constructor
 	 */
 	public Crossing(Point crossline1, Point crossline2) {
 		if (crossline1.i <= crossline2.i) {
@@ -27,13 +26,11 @@ public class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * diese Methode wird aufgerufen, wenn man z.B. println(irgendein crossing)
-	 * ausführt.
+	 * this method is called when you print e.g. println(any crossing) executes.
 	 */
 	@Override
 	public String toString() {
 		String r = "";
-		// "Crossing of: "+this.a.toString()+" and "+this.b.toString()+" \n";
 		if (atInf() && atNegInf()) {
 			r += "crossing at -inf";
 		} else if (atInf() && !atNegInf()) {
@@ -45,7 +42,7 @@ public class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * vergleichsfunktion. funktioniert so, wie im Interface vorausgesetzt
+	 * comparison function. works as expected in the interface
 	 */
 	@Override
 	public int compareTo(Crossing other) { // TODO: test this a bit
@@ -59,17 +56,6 @@ public class Crossing implements Comparable<Crossing> {
 		}
 		try {
 			int smallindex = Math.min(Math.min(Math.min(this.line1.i, this.line2.i), other.line1.i), other.line2.i);
-			// kommt Gerade mit kleinstem Index zweimal vor?
-			// boolean idoppelt=false;
-			// int j=0;
-			/*
-			 * if(this.line1.i==smallindex){j++;}; if (this.line2.i==smallindex){j++;}; if
-			 * (other.line1.i==smallindex){j++;}; if (other.line2.i==smallindex){j++;};
-			 */
-			// if (j>1){idoppelt=true;};
-			// Fall: beide Kreuzungen sind im Unendlichen
-			// Sonderbehandlung fÃ¼r drei parallele Geraden notwendig.
-			// Ergebnis hÃ¤ngt dann von y-Achsenabschnitt ab
 			if (this.atInf() && other.atInf()) {
 				if (this.atNegInf() && !other.atNegInf())// this negativ, other positiv
 				{
@@ -111,45 +97,47 @@ public class Crossing implements Comparable<Crossing> {
 			} else if (other.atInf() && !other.atNegInf()) {
 				return -1;
 			}
-//Fall: Alle Kreuzungen sind nicht im Unendlichen und Schnittpunkte liegen nicht Ã¼bereinander
+			// case: all intersections are not at infinity and intersection points are not
+			// on top of each other
 			else if (this.crAt() < other.crAt()) {
 				return -1;
 			} else if (this.crAt() > other.crAt()) {
 				return 1;
 			}
-//Fall: Alle Kreuzungen sind nicht im Unendlichn und Schnittpunkte liegen Ã¼bereinander
+			// case: all intersections are not at infinity and intersection points are on
+			// top of each other
 			else if (this.crAt() == other.crAt()) {
-//Fall: Gerade mit kleinstem Index kommt nicht in beiden Kreuzungen vor
+				// case: Even with the smallest index does not occur in both intersections
 				if (this.line1.i != other.line1.i) {
-					// Fall: Kreuzung ist rechts von der Null oder auf der y-Achse
+					// Case: Intersection is to the right of zero or on the y-axis
 					if (this.crAt() >= 0) {
-						if (this.line1.i < other.line1.i) {// Kleinstes Indexpaar ist bei Kreuzungspaar this
-							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
-								// Kreuzung this wandert nach links
+						if (this.line1.i < other.line1.i) { // Smallest index pair is this for crossing pair
+							if (this.line1.a - this.line1.a > 0) { // Even with the smallest index has a larger slope
+								// Intersection this moves to the left
 								return -1;
 							} else {
 								return 1;
 							}
-						} else {// kleinster Index ist bei Krezungspaar other
-							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
-								// Kreuzung other wandert nach links
+						} else { // smallest index is other for crossing pair
+							if (other.line1.a - other.line1.a > 0) { // Even with the smallest index has a larger slope
+								// intersection other moves to the left
 								return 1;
 							} else {
 								return -1;
 							}
 						}
 
-					} else {// Kreuzungspunkt ist im Negativen Berich
-						if (this.line1.i < other.line1.i) {// Kleinstes Indexpaar ist bei Kreuzungspaar this
-							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
-								// Kreuzung this wandert nach rechts
+					} else { // Crosspoint is in the negative range
+						if (this.line1.i < other.line1.i) { // Smallest index pair is this for crossing pair
+							if (this.line1.a - this.line1.a > 0) { // Even with the smallest index has a larger slope
+								// Intersection this moves to the right
 								return 1;
 							} else {
 								return -1;
 							}
-						} else {// kleinster Index ist bei Krezungspaar other
-							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
-								// Kreuzung other wandert nach rechts
+						} else { // smallest index is other for crossing pair
+							if (other.line1.a - other.line1.a > 0) { // Even with the smallest index has a larger slope
+								// intersection other moves to the right
 								return -1;
 							} else {
 								return 1;
@@ -158,82 +146,85 @@ public class Crossing implements Comparable<Crossing> {
 
 					}
 				}
-//Fall: Gerade mit kleinstem Index kommt in beiden Kreuzungen vor
-//die beiden Kreuzungen werden also durch 3 Geraden gebildet, die sich in einem Punkt schneiden
+				// case: Even with the smallest index occurs in both intersections
+				// the two intersections are formed by 3 straight lines that intersect at one
+				// point
 				else {
-					// Fall: Kreuzung ist rechts von der Null oder auf der y-Achse
+					// Case: Intersection is to the right of zero or on the y-axis
 					if (this.crAt() >= 0) {
-						// Gerade mit kleinstem Index hat größte Steigung
+						// Even with the smallest index has the greatest slope
 						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
-							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
-																	// kleinsten Index haben
+							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+								// have smallest index
 								return -1;
 							} else {
 								return 1;
 							}
 
-						} // Gerade mit kleinstem Index liegt zwischen anderen beiden Geraden(hat mittlere
-							// Steigung)
-							// Gerade other.line2 liegt oberhalb von this.line1
+						} // Straight line with the smallest index lies between the other two straight
+							// lines(has middle
+							// Pitch)
+							// Just other.line2 is above this.line1
 						else if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a < 0) {
 							return -1;
 
-						} // Gerade other.line2 liegt unterhalb von this.line1
+						} // Just other.line2 is below this.line1
 						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a > 0) {
 							return 1;
 						}
-						// Gerade mit kleinstem Index hat kleinste Steigung
+						// Even with the smallest index has the smallest slope
 						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a < 0) {
-							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
-																	// kleinsten Index haben
+							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+								// have smallest index
 								return -1;
 							} else {
 								return 1;
 							}
 
 						} else {
-							System.out.println("Fehlerhafte Abfrage in compareToCrosing, Kreuzung im Positiven");
+							System.out.println("Error query in compareToCrosing, crossing in positive");
 						}
 					} else {
-						// Fall: Kreuzung ist im negativen Bereich
+						// Case: Intersection is in negative territory
 
-						// Gerade mit kleinstem Index hat größte Steigung
+						// Even with the smallest index has the greatest slope
 						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
-							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
-																	// kleinsten Index haben
+							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+								// have smallest index
 								return 1;
 							} else {
 								return -1;
 							}
 
-						} // Gerade mit kleinstem Index liegt zwischen anderen beiden Geraden(hat mittlere
-							// Steigung)
-							// Gerade other.line2 liegt oberhalb von this.line1
+						} // Straight line with the smallest index lies between the other two straight
+							// lines(has middle
+							// Pitch)
+							// Just other.line2 is above this.line1
 						else if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a < 0) {
 							return 1;
 
-						} // Gerade other.line2 liegt unterhalb von this.line1
+						} // Just other.line2 is below this.line1
 						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a > 0) {
 							return -1;
 						}
-						// Gerade mit kleinstem Index hat kleinste Steigung
+						// Even with the smallest index has the smallest slope
 						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a < 0) {
-							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
-																	// kleinsten Index haben
+							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+								// have smallest index
 								return 1;
 							} else {
 								return -1;
 							}
 
 						} else {
-							System.out.println("Fehlerhafte Abfrage in compareToCrosing, Kreuzung im Negativen");
+							System.out.println("Error query in compareToCrosing, negative crossing");
 
 						}
 
-					} // Ende Else Fall: Kreuzung im Negativbereich
+					} // end of Else case: negative crossing
 
-				} // Ende Kreuzung werden durch 3 Geraden gebildet
-			} // Ende : Kreuzungen liegen Ã¼bereinaner
+				} // end crossing are formed by 3 straight lines
+			} // End : Intersections are on top of each other
 
 			// return (-1)* Point.op2naive(a, b, other.a, other.b);
 		} catch (Exception e) {
@@ -243,20 +234,19 @@ public class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * funktion um herauszufinden, ob der Schnittpunkt sich bei +- Unendlich
-	 * befindet
-	 * 
-	 * @return true wenn ja
+	 * function to find out if the intersection is at +- infinity located
+	 *
+	 * @return true if yes
 	 */
 	public boolean atInf() {
 		return line1.a == line2.a;
 	}
 
 	/**
-	 * funktion um herauszufinden, ob der schnittpunkt bei unendlich bei - oder bei
-	 * + Unendlich ist
-	 * 
-	 * @return true wenn bei -unendl
+	 * function to find out whether the point of intersection at infinity is at - or
+	 * at + is infinity
+	 *
+	 * @return true if at -unendl
 	 */
 	public boolean atNegInf() {
 		if (!atInf()) {
@@ -276,10 +266,10 @@ public class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * hilfsfunktion, um schnell auf den x-wert des Schnittpunkts zuzugreifen.
-	 * CRosses AT
-	 * 
-	 * @return der X-wert, falls es einen gibt, sonst 0.
+	 * utility function to quickly access the x-value of the intersection. CRosses
+	 * AT
+	 *
+	 * @return the X-value if there is one, otherwise 0.
 	 */
 	public double crAt() {
 		if (!atInf()) {

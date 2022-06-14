@@ -3,7 +3,7 @@ package hamSanApp;
 import java.util.Comparator;
 
 /**
- * comparator für blueTopleft
+ * comparator for blueTopleft
  * 
  * @author fabian
  *
