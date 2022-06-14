@@ -1,21 +1,21 @@
-/**
- * 
- */
 package hamSanApp;
 
 import java.util.Comparator;
-//vergleicht zwei Linien nach ihrem Wert in Koordinate x. 
-//Linien werden so sortiert, dass gilt: 
-//Je größer der Wert der Geraden in Koordinate x, desto kleiner ist Gerade in Geradenordnung.
-//Bei Gleichheit: ist value positiv, so ist Gerade mit kleinerem Index oberhalb
-//ist value negativ, so ist Gerade mit kleinerem Index unterhalb
-//ist value = 0 so ist die Gerade mit kleinerem Index oberhalb der anderen. 
 
 /**
+ * Compares two lines by their value in coordinate x.
+ * <p>
+ * Lines are sorted such that: The greater the value of the straight line in
+ * coordinate x, the smaller the straight line in straight line order. In the
+ * case of equality: if value is positive, then a line with a smaller index is
+ * above; if value is negative, the straight line with a smaller index is below;
+ * if value = 0, the line with the smaller index is above the other.
+ * 
  * @author annette
  *
  */
 public class LineComparator implements Comparator<Point> {
+	
 	/**
 	 * @param x Stelle zur Auswertung
 	 */
@@ -26,7 +26,7 @@ public class LineComparator implements Comparator<Point> {
 
 	private double x;
 
-	// (y0 < y1) gdw y0 unbterhalb von y1 gdw return 1
+	// (y0 < y1) iff y0 below y1 iff return 1
 	@Override
 	public int compare(Point arg0, Point arg1) {
 		if (arg0.equals(arg1)) {

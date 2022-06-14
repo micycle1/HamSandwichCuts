@@ -1,16 +1,17 @@
 package hamSanApp;
 
 /**
- * diese Klasse stellt die Kreuzung zweier Geraden dar und ist hauptsï¿½chlich
+ * diese Klasse stellt die Kreuzung zweier Geraden dar und ist hauptsüchlich
  * zum sortieren da.
  * 
  * @author fabian
  *
  */
 public class Crossing implements Comparable<Crossing> {
-//die beiden Linien:
+	
+//	die beiden Linien:
 	public Point line1; // Linie mit kleinerem
-	public Point line2; // Linie mit grÃ¶ÃŸerem Index
+	public Point line2; // Linie mit größerem Index
 
 	/**
 	 * Konstruktor
@@ -27,18 +28,7 @@ public class Crossing implements Comparable<Crossing> {
 
 	/**
 	 * diese Methode wird aufgerufen, wenn man z.B. println(irgendein crossing)
-	 * ausfï¿½hrt.
-	 */
-	/*
-	 * public String toString() { String r = "";
-	 * //"Crossing of: "+this.a.toString()+" and "+this.b.toString()+" \n"; if
-	 * (atInf() && atNegInf()) { r
-	 * +="Crossing of: "+this.a.toString()+" and "+this.b.toString()+" \n"
-	 * +"crossing at -inf"; } if (atInf() && !atNegInf()) { r
-	 * +="Crossing of: "+this.a.toString()+" and "+this.b.toString()+" \n"
-	 * +"crossing at +inf"; } else { r
-	 * +="Crossing of: "+this.a.toString()+" and "+this.b.toString()+" \n"
-	 * +"crossing at "+ crAt(); } return r; }
+	 * ausführt.
 	 */
 	@Override
 	public String toString() {
@@ -134,14 +124,14 @@ public class Crossing implements Comparable<Crossing> {
 					// Fall: Kreuzung ist rechts von der Null oder auf der y-Achse
 					if (this.crAt() >= 0) {
 						if (this.line1.i < other.line1.i) {// Kleinstes Indexpaar ist bei Kreuzungspaar this
-							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat grÃ¶ÃŸere Steigung
+							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
 								// Kreuzung this wandert nach links
 								return -1;
 							} else {
 								return 1;
 							}
 						} else {// kleinster Index ist bei Krezungspaar other
-							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat grÃ¶ÃŸere Steigung
+							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
 								// Kreuzung other wandert nach links
 								return 1;
 							} else {
@@ -151,14 +141,14 @@ public class Crossing implements Comparable<Crossing> {
 
 					} else {// Kreuzungspunkt ist im Negativen Berich
 						if (this.line1.i < other.line1.i) {// Kleinstes Indexpaar ist bei Kreuzungspaar this
-							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat grÃ¶ÃŸere Steigung
+							if (this.line1.a - this.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
 								// Kreuzung this wandert nach rechts
 								return 1;
 							} else {
 								return -1;
 							}
 						} else {// kleinster Index ist bei Krezungspaar other
-							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat grÃ¶ÃŸere Steigung
+							if (other.line1.a - other.line1.a > 0) {// Gerade mit kleinstem Index hat größere Steigung
 								// Kreuzung other wandert nach rechts
 								return -1;
 							} else {
@@ -173,7 +163,7 @@ public class Crossing implements Comparable<Crossing> {
 				else {
 					// Fall: Kreuzung ist rechts von der Null oder auf der y-Achse
 					if (this.crAt() >= 0) {
-						// Gerade mit kleinstem Index hat grÃ¶ÃŸte Steigung
+						// Gerade mit kleinstem Index hat größte Steigung
 						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
 							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
 																	// kleinsten Index haben
@@ -207,7 +197,7 @@ public class Crossing implements Comparable<Crossing> {
 					} else {
 						// Fall: Kreuzung ist im negativen Bereich
 
-						// Gerade mit kleinstem Index hat grÃ¶ÃŸte Steigung
+						// Gerade mit kleinstem Index hat größte Steigung
 						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
 							if (this.line2.a - other.line2.a > 0) {// Vergleich der Steigungen der aneren beiden Geraden, die nicht den
 																	// kleinsten Index haben

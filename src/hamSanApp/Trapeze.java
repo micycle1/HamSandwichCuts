@@ -1,15 +1,26 @@
 package hamSanApp;
 
 /**
- * diese Klasse stellt ein Trapez dar, in dem sich die blaue medianlinie
- * befindet
- * 
+ * this class represents a trapezoid containing the blue median line located
+ *
  * @author fabian
  *
  */
-public class Trapeze { // TODO was tun, wenn das trapez in einem unbegrenzten intervall ist?
+public class Trapeze { // TODO what to do if the trapezoid is in an infinite interval?
+	
+	public double left; // left margin
+	public double right; // right edge
+	public double topleft; //
+	public double topright; //
+	public double botleft; //
+	public double botright; // the four y values ​​to constrain
+	public boolean bounded; // is the trapezoid bounded?
+	public boolean openleft; // is the unconstrained trapezoid open to the left?
+	public double topslope; //
+	public double botslope; // the top and bottom slope limits of the trapezium.
+	
 	/**
-	 * Konstruktor, alles ganz selbsterkl�rend
+	 * Constructor, all very self-explanatory
 	 */
 	Trapeze(double x1, double y_topleft, double y_botleft, double x2, double y_topright, double y_botright) {
 		left = x1;
@@ -23,13 +34,13 @@ public class Trapeze { // TODO was tun, wenn das trapez in einem unbegrenzten in
 	}
 
 	/**
-	 * Konstruktor f�r ein unbeschr�nktes trapez
-	 * 
-	 * @param left     ist das Trapez nach links unbeschr�nkt?
-	 * @param top      der gr��ere y-wert
-	 * @param bot      der kleinere y-wert
-	 * @param topslope die Steigungsgrenze oben
-	 * @param botslope die Steigungsgrenze unten
+	 * Constructor for an unconstrained trapezoid
+	 *
+	 * @param left     is the trapezoid unconstrained to the left?
+	 * @param top      the larger y value
+	 * @param bot      the smaller y value
+	 * @param topslope the slope limit at the top
+	 * @param botslope the slope limit below
 	 */
 	Trapeze(boolean oleft, double x, double top, double bot, double tslope, double bslope) {
 		openleft = oleft;
@@ -46,25 +57,13 @@ public class Trapeze { // TODO was tun, wenn das trapez in einem unbegrenzten in
 		botslope = bslope;
 	}
 
-	public double left; // linker Rand
-	public double right; // rechter Rand
-	public double topleft; //
-	public double topright; //
-	public double botleft; //
-	public double botright; // die vier y-Werte zur Beschr�nkung
-	public boolean bounded; // ist das Trapez beschr�nkt?
-	public boolean openleft; // ist das unbeschr�nkte Trapez nach links offen?
-	public double topslope; //
-	public double botslope; // die steigungsgrenzen des Trapezes oben und unten.
-
 	/**
-	 * Testet, ob eine Linie das Trapez schneidet
-	 * 
-	 * @param i die zu testende Linie
-	 * @return +1 wenn die linie obendr�ber geht, 0 wenn sie schneidet, -1 wenn
-	 *         sie untendrunter geht
+	 * Tests if a line intersects the trapezoid
+	 *
+	 * @param i the line to test
+	 * @return +1 if the line crosses, 0 if it crosses, -1 if she goes underneath
 	 */
-	public int intersects(Point i) { // TODO: testen
+	public int intersects(Point i) { // TODO: test
 
 		if (bounded) {
 			double y1 = i.eval(left);

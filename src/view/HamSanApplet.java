@@ -32,9 +32,6 @@ import hamSanApp.HamSanAlg;
 
 public class HamSanApplet extends JApplet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6049999518358173580L;
 
 	private JButton randomButton;

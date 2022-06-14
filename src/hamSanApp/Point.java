@@ -36,14 +36,14 @@ public class Point {
 	}
 
 	/**
-	 * zum ausgeben als Punkt (nicht wichtig, hï¿½chstens zu debug-zwecken)
+	 * zum ausgeben als Punkt (nicht wichtig, hüchstens zu debug-zwecken)
 	 */
 	public void repr_point() {
 		System.out.println("point at " + a + " " + b);
 	}
 
 	/**
-	 * zum ausgeben als Gerade (nicht wichtig, hï¿½chstens zu debug-zwecken)
+	 * zum ausgeben als Gerade (nicht wichtig, hüchstens zu debug-zwecken)
 	 */
 	public void repr_line() {
 		System.out.println("line: y= " + a + "x + " + b);
@@ -88,7 +88,7 @@ public class Point {
 	}
 
 	/**
-	 * nicht funktionierende version von operation 1. lï¿½sch mich.
+	 * nicht funktionierende version von operation 1. lüsch mich.
 	 */
 	public static int op1(Point i, Point j, Point k) {
 		double Delta1;
@@ -109,14 +109,14 @@ public class Point {
 	}
 
 	/**
-	 * gibt zurï¿½ck, ob sich die Geraden i und j oberhalb der Geraden k schneiden
+	 * gibt zurück, ob sich die Geraden i und j oberhalb der Geraden k schneiden
 	 * oder unterhalb ist nicht fertig implementiert! (brauchen wir glaub ich auch
 	 * nicht)
 	 * 
 	 * @param i erste schnittgerade
 	 * @param j zweite schnittgerade
 	 * @param k vergleichsgerade
-	 * @return 1 wenn ï¿½berhalb, -1 wenn unterhalb
+	 * @return 1 wenn überhalb, -1 wenn unterhalb
 	 */
 	public static int op1naive(Point i, Point j, Point k) {
 		// calculate the crossing point of i and j:
@@ -142,7 +142,7 @@ public class Point {
 
 	/**
 	 * errechnet, ob sich i und j links von k und l schneiden oder nicht. i,j,k und
-	 * l mï¿½ssen sich unterscheiden!
+	 * l müssen sich unterscheiden!
 	 * 
 	 * @return -1 wenn sich ij links von kl schneiden, 1 sonst
 	 * @throws sollte eigentlich nicht, nur wenn du's verkackst

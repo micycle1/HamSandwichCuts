@@ -8,35 +8,34 @@ import view.PointType;
 import view.VisualPoint;
 
 /**
- * Diese Klasse beinhaltet den eigentlichen Algorithmus und einige
- * Hilfsfunktionen. wichtigie Methoden von au�en: addLine, removeLine,
- * findLine, findPoint, doAlg
+ * This class contains the actual algorithm and some helper functions. Important
+ * external methods: addLine, removeLine, findLine, findPoint, doAlg.
  * 
  * @author fabian
  *
  */
 public class HamSanAlg {
 
-	public List<Point> lBlue; // hier werden die vom Alg. ber�cksichtigten Blauen Linien gespeichert
-	public List<Point> lRed; // hier werden die vom Alg. ber�cksichtigten Roten Linien gespeichert
-	public List<Point> lBlueDel; // Del f�r deleted
-	public List<Point> lRedDel; // hier werden die nicht ber�cksichtigten linien gespeichert
+	public List<Point> lBlue; // hier werden die vom Alg. berücksichtigten Blauen Linien gespeichert
+	public List<Point> lRed; // hier werden die vom Alg. berücksichtigten Roten Linien gespeichert
+	public List<Point> lBlueDel; // Del für deleted
+	public List<Point> lRedDel; // hier werden die nicht berücksichtigten linien gespeichert
 	public List<Point> firstlRed;// Punktemengen zu Beginn des Algorithmus
 	public List<Point> firstlBlue;
 	public boolean leftborder; //
 	public boolean rightborder; // bools, die wahr sind, falls der Momentane betrachtungsbereich nach
-								// links/rechts beschr�nkt ist
+								// links/rechts beschrünkt ist
 	public double leftb; //
 	public double rightb; // der linke und Rechte Rand des betrachtungsbereiches
 	int levelBlue; //
 	int levelRed; // die wievielte linie von oben ist die gesuchte medianlinie?
-	boolean firstRun; // ist der Algorithmus schonmal etwas gelaufen (k�nnen wir noch linien
-						// ver�ndern?
+	boolean firstRun; // ist der Algorithmus schonmal etwas gelaufen (künnen wir noch linien
+						// veründern?
 	public boolean done; // ist der Algorithmus fertig?
-	boolean colorSwap; // m�ssen wir die Farben gerade vertauscht zeichnen?
-	public boolean verticalSol; // ist die L�sung eine Vertikale Linie?
-	public double verticalSolPos; // position der vertikalen L�sung
-	public Point solution; // position der nicht-vertikalen L�sung
+	boolean colorSwap; // müssen wir die Farben gerade vertauscht zeichnen?
+	public boolean verticalSol; // ist die Lüsung eine Vertikale Linie?
+	public double verticalSolPos; // position der vertikalen Lüsung
+	public Point solution; // position der nicht-vertikalen Lüsung
 	public double[] borders; // positionen der grenzen zwischen streifen.
 	// konvention: borders[i] ist der linke rand von dem i-ten streifen und die
 	// streifen sind halboffen, linker punkt ist drin.
@@ -44,7 +43,7 @@ public class HamSanAlg {
 	boolean DEBUG = true;
 	public Trapeze trapeze; // das trapez (zum zeichnen)
 	public int minband; //
-	public int maxband; // zur bin�ren suche auf den intervallen(b�ndern)
+	public int maxband; // zur binüren suche auf den intervallen(bündern)
 	public int step; // in welchem shritt sind wir?
 						// 0: Ausgangssituation
 						// 1: Intervalle Eingeteilt
@@ -59,7 +58,7 @@ public class HamSanAlg {
 								// positivUnendlichen besteht
 
 	final double alpha = 1.0d / 32.0d; //
-	final double eps = 1.0d / 8.0d; // Konstanten f�r den Alg
+	final double eps = 1.0d / 8.0d; // Konstanten für den Alg
 
 	/**
 	 * Konstruktor, macht nichts besonderes.
@@ -69,7 +68,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * setzt alle Variablen auf startzust�nde
+	 * Sets all variables to start states.
 	 */
 	public void init() {
 		lBlue = new ArrayList<Point>();
@@ -98,12 +97,12 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Linien hinzuf�gen in Form zweier Koordinaten. nur m�glich, wenn der
-	 * Algorithmus noch nicht angelaufen ist.
-	 * 
-	 * @param x    erste
-	 * @param y    zweite koordinate
-	 * @param blue ist es eine blaus linie?
+	 * Add lines in the form of two coordinates. Only possible if the Algorithm not
+	 * yet started.
+	 *
+	 * @param x    first
+	 * @param y    second coordinate
+	 * @param blue is it a blue line?
 	 */
 	public Point addLine(double x, double y, boolean blue) {
 		if (!firstRun) {
@@ -119,10 +118,10 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * l�sche eine linie aus lBlue und lRed heraus. nur m�glich, wenn der
-	 * Algorithmus noch nicht angelaufen ist.
+	 * Erase a line out of Blue and Red. only possible if the * algorithm has not
+	 * yet started.
 	 * 
-	 * @param l die zu l�schende linie
+	 * @param l the line to delete
 	 */
 	public void removeLine(Point l) {
 		if (!firstRun) {
@@ -133,7 +132,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * verstecke eine Linie vor dem Algorithmus. sie wird dann gesondert gezeichnet.
+	 * hide a line from the algorithm. it is then drawn separately.
 	 * 
 	 * @param l
 	 */
@@ -147,11 +146,10 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Funktion, die einen Punkt zur�ckgibt, der in der n�he der position (x,y)
-	 * ist.
+	 * * Function that returns a point near position (x,y).
 	 * 
-	 * @param tolerance wie weit entfernt (x,y) von dem Punkt sein darf;
-	 * @return der Punkt
+	 * @param tolerance how far (x,y) can be from the point
+	 * @return the dot
 	 */
 	public Point findPoint(double x, double y, double tolerance) {
 		Point best = null;
@@ -174,8 +172,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Funktion, die eine Gerade zur�ckgibt, der in der n�he der position (x,y)
-	 * ist.
+	 * Funktion, die eine Gerade zurückgibt, der in der nühe der position (x,y) ist.
 	 * 
 	 * @param tolerance wie weit entfernt (x,y) von dem Punkt sein darf;
 	 * @return der Punkt
@@ -263,7 +260,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Ist an der stelle die Blaue Medianlinie h�her als die Rote?
+	 * Ist an der stelle die Blaue Medianlinie hüher als die Rote?
 	 * 
 	 * @param x die Stelle
 	 * @return 1, falls blau oben, -1 falls rot, 0 falls wir einen Schnittpunkt
@@ -283,12 +280,11 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Hilfsfunktion, um herauszufinden, ob wir eine Kreuzung ber�cksichtigen
-	 * m�ssen. Schaut nach, ob die Kreuzung innerhalb des momentanen
-	 * Betrachtungsbereiches ist.
-	 * 
-	 * @param c die betreffende Kreuzung
-	 * @return true, falls wir die Kreuzung ber�cksichtigen m�ssen.
+	 * Helper function to find out if we consider an intersection have to. See if
+	 * the intersection is within the current viewing area is.
+	 *
+	 * @param c the intersection in question
+	 * @return true if we need to consider the crossing.
 	 */
 	public boolean inBorders(Crossing c) { // Don't know if commenting out this makes it work. huh
 		double tolerance = 0.00001;
@@ -307,12 +303,12 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Funktion, die errechnet, ob im unbeschr�nkten bereich links die blaue
-	 * medianlinie �ber der Roten ist
+	 * Funktion, die errechnet, ob im unbeschrünkten bereich links die blaue
+	 * medianlinie über der Roten ist
 	 * 
 	 * @return true falls ja
 	 */
-	public boolean blueTopLeft() { // todo Testme
+	public boolean blueTopLeft() { // TODO Testme
 		LineComparator2 c = new LineComparator2();
 
 		List<Point> blueLoc = new ArrayList<Point>(lBlue);
@@ -323,12 +319,12 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * gibt die level-t groesste steigung der roten oder blauen geraden zurueck wird
-	 * fuer unbeschraenkte trapeze gebraucht.
-	 * 
-	 * @param blue  die blauen geraden?
-	 * @param level wievielt-groesste steigung?
-	 * @return die steigung
+	 * returns the level-t highest slope of the red or blue line. Used for
+	 * unrestricted trapezes.
+	 *
+	 * @param blue  the blue straights?
+	 * @param level how many-biggest slope?
+	 * @return the slope
 	 */
 	public double getslope(boolean blue, int level) {
 		LineComparator2 c = new LineComparator2();
@@ -344,9 +340,9 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * funktion, die prueft, ob ein gegebener schnitt valide ist.
-	 * 
-	 * @return Ja falls valider Schnitt
+	 * function that checks if a given cut is valid.
+	 *
+	 * @return Yes if valid cut
 	 */
 	public boolean validSol(boolean verbose) {
 		if (!done) {
@@ -460,7 +456,8 @@ public class HamSanAlg {
 					"There are " + rbelow + " red points below, " + rabove + " above of a total of " + (lRed.size() + lRedDel.size()));
 		}
 
-		if ((Math.max(bbelow, babove) > (lBlue.size() + lBlueDel.size()) / 2) || (Math.max(rbelow, rabove) > (lRed.size() + lRedDel.size()) / 2)) {
+		if ((Math.max(bbelow, babove) > (lBlue.size() + lBlueDel.size()) / 2)
+				|| (Math.max(rbelow, rabove) > (lRed.size() + lRedDel.size()) / 2)) {
 			return false;
 		}
 
@@ -468,34 +465,31 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * der eigentliche Algorithmus. ein ausf�hren dieses Algorithmus stellt einen
-	 * Iterationsschritt dar. wir wollen das warscheinlich noch weiter in kleinere
-	 * Schritte aufteilen.
+	 * the actual algorithm. running this algorithm provides a Iteration step. We
+	 * probably want to further break this down into smaller ones Split steps.
 	 */
-
-	// Im Fall, dass Lösung eine Kreuzung im Unendlichen ist, ist die Lösung eine
-	// vertikale Gerade.
-	// Gehe alle Kreuzungen vor index oder ab index durch und finde den Cut!
+	// In case solution is a crossing at infinity, the solution is one
+	// vertical line.
+	// Go through all intersections before index or after index and find the cut!
 	public boolean verticalcut() {
-		System.out.println("Sind im Fall, dass Hamsandwichcut eine Vertikale ist");
+		System.out.println("Are in case Hamsandwichcut is a vertical");
 		for (Point element : lBlue) {
 			verticalSolPos = element.a;
 			if (validSol(true)) {
-				System.out.println("Verticale Lösung durch blauen Punkt gefunden");
+				System.out.println("Vertical solution found through blue dot");
 				return true;
 			}
 		}
-		System.out.println("Es gibt keine Vertikale Lösung durch einen blauen Punkt");
+		System.out.println("There is no vertical solution through a blue dot");
 		for (Point element : lRed) {
 			verticalSolPos = element.a;
 			if (validSol(true)) {
-				System.out.println("Verticale Lösung durch roten Punkt gefunden");
+				System.out.println("Vertical solution found through red dot");
 				return true;
 			}
-			System.out.println("Es gibt überhaupt keine Vertikale Lösung");
+			System.out.println("There is no vertical solution at all");
 		}
 		return false;
-
 	}
 
 	public void doAlg() { // sets done to true iff it has found a solution
@@ -554,7 +548,7 @@ public class HamSanAlg {
 					// do we need a vertical line?
 					if (b.a == r.a) {
 						if (DEBUG) {
-							System.out.println("haben genau zwei verschiedenfarbene parallele Geraden");
+							System.out.println("have exactly two parallel lines of different colors");
 						}
 						done = true;
 						verticalSol = true;
@@ -631,7 +625,7 @@ public class HamSanAlg {
 				// make stripes with at most alpha*(n choose 2) crossings a piece.
 
 				minband = 0;
-				maxband = 0; // wird �berschrieben.
+				maxband = 0; // wird überschrieben.
 				int band = 1;
 				int bandsize = (int) (crossings.size() * alpha);
 				bandsize = Math.max(1, bandsize);
@@ -641,47 +635,47 @@ public class HamSanAlg {
 				// crossings at real values
 				// are geq borders[i] and less than borders[i+1] for 1<=i<maxborders
 
-				leftmannyC = false;// wird auf true gesetzt,falls linker bzw rechter Randbereich bei
-									// Intervalleinteilung
-				rightmannyC = false;// mehr als bandsize viele Kreutungen im negativ/bzw positiv Unendlichen haben
+				leftmannyC = false;// set to true if left or right border area at
+				// interval division
+				rightmannyC = false;// have more than bandsize crossings in negative/resp. positive infinity
 				if (DEBUG) {
-					System.out.println("Intervalle werden eingeteilt");
+					System.out.println("Intervals are divided");
 				}
 				for (int i = bandsize; i < crossings.size(); i += bandsize) {
-					// Fall, dass bei aktuellem Index i Kreuzung im Unendlichen liegt
+					// case that at current index i crossing is at infinity
 					if (crossings.get(i).atInf()) {
-						if (crossings.get(i).atNegInf()) {// Fall, dass erste bandsize Kreutungen im negativ-Unendlichen liegen
+						if (crossings.get(i).atNegInf()) { // case that first bandsize crossings are at negative infinity
 
-							// gibt es im negativ Unendlichen mehr als bandsize Kreuzungen, so vergrößere
-							// erstes Intervall so,
-							// dass alle Kreuzungen im negativ Unendlichen darin enthalten sind.
+							// there are more than bandsize crossings at negative infinity, so increase
+							// first interval like this,
+							// that all crossings at negative infinity are included in it.
 							leftmannyC = true;
 							if (DEBUG) {
-								System.out.println("haben viele kreuzungen im negativ-Unendlichen");
+								System.out.println("have many crossings at negative infinity");
 							}
 							while (i < crossings.size() && crossings.get(i).atInf() && crossings.get(i).atNegInf()) {
 								i++;
 							}
-							// Gibt es nur Kreuzungen im negativ und positiv unendlichen, so besteht die
-							// Eingabe aus parallelen
-							// Geraden bzw aus Punkten mit gleicher x-Koordinate. die Vertikalte durch all
-							// diese Punkte
-							// ist in diesem Fall die Lösung
+							// If there are only intersections in negative and positive infinity, then the
+							// input from parallels
+							// Straight lines or from points with the same x-coordinate. the vertical
+							// through all
+							// these points
+							// is the solution in this case
 							if ((i == crossings.size()) || crossings.get(i).atInf() && !crossings.get(i).atNegInf()) {
 								if (DEBUG) {
-									System.out.println("Da alle Geraden parallel sind, haben "
-											+ "eingegebene Punkte gleiche x-Koordinate. Deshalb ist "
-											+ "das Ergebnis eine Vertikale durch alle Punkte hindurch; "
-											+ "Fall von vielen kreutzungen bei - Inf");
+									System.out.println("Since all lines are parallel, we have "
+											+ "Entered points have the same x-coordinate. Therefore, "
+											+ "the result of a vertical through all points; " + "Case of many crossings at - Inf");
 								}
 								done = true;
 								verticalSol = true;
 								verticalSolPos = lBlue.get(0).a;
 								return;
 							}
-						} // Ende: Fall, dass erste bandsize Kreuzungen im negativ-Unendlichen leigen
-						else if (i == bandsize) {// passiert das schon zu Beginn der Intervalleinteilung,
-							// haben wir wahrscheinlich parallele Geraden als Eingabe
+						} // end: case that first bandsize crossings are in negative infinity
+						else if (i == bandsize) { // this already happens at the beginning of the interval division,
+							// we probably have parallel lines as input
 							boolean isparallel = false;
 							for (int j = 0; j < crossings.size() - 1; j++) {
 								if (crossings.get(j).crAt() == crossings.get(j + 1).crAt()) {
@@ -690,10 +684,9 @@ public class HamSanAlg {
 							}
 							if (isparallel) {
 								if (DEBUG) {
-									System.out.println("Da alle Geraden parallel sind, haben "
-											+ "eingegebene Punkte gleiche x-Koordinate. Deshalb ist "
-											+ "das Ergebnis eine Vertikale durch alle Punkte hindurch"
-											+ "im Fall, dass Parallelität geprüft wird");
+									System.out.println("Since all lines are parallel, we have "
+											+ "Entered points have the same x-coordinate. Therefore, "
+											+ "the result of a vertical through all points" + "in case concurrency is checked");
 								}
 								done = true;
 								verticalSol = true;
@@ -701,13 +694,13 @@ public class HamSanAlg {
 								return;
 							} else {
 								if (DEBUG) {
-									System.out.println("komischer fall, in dem im Ersten Intervall schon Kreuzung Unendlich auftaucht");
-									// da nicht alle Geraden parallel sind, muss es eine Kreuzung geben, die nicht
-									// im Unendlichen liegt
-									// und im ersten Itervall enthalten ist.
-									// Wir erhalten also in diesem Fall nur genau zwei Intervalle!
-									System.out.println("haben genau zwei Intervalle. Im Ersten Intervall ist mindestens "
-											+ "eine Kreutung enthalten, die nicht im Unendlichen liegt");
+									System.out.println("funny case, in which the crossing infinity appears in the first interval");
+									// since not all lines are parallel, there must be an intersection that isn't
+									// lies at infinity
+									// and is contained in the first itervall.
+									// So in this case we only get exactly two intervals!
+									System.out.println("have exactly two intervals. In the first interval there is at least "
+											+ "contain a crossing that is not at infinity");
 								}
 								rightmannyC = true;
 								while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
@@ -719,12 +712,13 @@ public class HamSanAlg {
 								break;
 							}
 
-						} // Ende des Falls, dass wir bei Beginn der Intervalleinteilung eine Kreutzung im
-							// positiv Unendlicheh haben
+						} // End of the case that at the beginning of the interval division we have a
+							// crossing in the
+							// have positive infinity
 
-						else {// Haben Kreutzung im positiv Unendlichen nicht zu Beginn der
-								// Intervalleinteilung
-							System.out.println("haben viele kreuzungen im Positiv Unendlichen");
+						else {// Don't have crossing at positive infinity at the beginning of the
+							// interval division
+							System.out.println("have many crossings in positive infinity");
 							rightmannyC = true;
 							while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
 								i--;
@@ -736,8 +730,8 @@ public class HamSanAlg {
 							maxband = band;// }
 							break;
 						}
-					} // Ende fom Fall, dass beim aktuellen Index Kreutzung im Unendlichen ist
-					/////// Fall, dass beim aktuellen Index keine Kreuzung im Unendlichen ist
+					} // End if the current index has a crossing at infinity
+						/////// Case when the current index has no crossing at infinity
 
 					borders[band] = crossings.get(i).crAt();
 					band++;
@@ -745,7 +739,7 @@ public class HamSanAlg {
 				}
 				step++;
 				if (DEBUG) {
-					System.out.println("Intervalle eingeteilt!");
+					System.out.println("Intervals divided!");
 				}
 				break;
 			case 1 :
@@ -816,7 +810,7 @@ public class HamSanAlg {
 					return;
 				}
 
-				// prüfe, ob Betrachtungsbereich nur Kreuzungen bei - inf oder + inf hat und
+				// prÃ¼fe, ob Betrachtungsbereich nur Kreuzungen bei - inf oder + inf hat und
 				// berechne
 				// in diesem Fall die Vertikale Lösung
 				if ((!leftborder && leftmannyC) || (!rightborder && rightmannyC)) {

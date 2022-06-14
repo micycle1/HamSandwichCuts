@@ -17,13 +17,9 @@ import javax.swing.event.MouseInputListener;
 import hamSanApp.Crossing;
 import hamSanApp.HamSanAlg;
 
-//import java.util.Date;
 
 public class LinePanel extends JPanel implements MouseMotionListener, MouseWheelListener, MouseInputListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1230109349211303663L;
 
 	private HamSanAlg h;
