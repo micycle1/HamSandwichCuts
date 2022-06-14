@@ -1,19 +1,3 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf8" />
-    <title>File Javaapplet</title>
-</head>
-<body>
-
-    <h1>Ham Sandwich Applet</h1>
-
-    <object type="application/x-java-applet;version=1.4.1" name="jsap" id="jsap" width=100% height="600">
-        <param name="archive" value="applet.jar">
-        <param name="code" value="view.HamSanApplet">
-        <param name="mayscript" value="yes">
-        <param name="scriptable" value="true">
-    </object>
 <h2>How to use this applet</h2>
 On top there are two big panels. They show [-10,10]^2. The left panel shows the primal situation, where the objects are points. The right panel shows the dual situation, where the objects are lines. Points can be added by left-clicking in the left panel or by using the text fields and the “place points at” panel. Right clicking deletes points in either panel. Hovering over a point highlights it in both panels. Pressing space or using the Toggle color button changes the color of the points added. The view in the right panel can be zoomed by using the mouse wheel or dragging the right mouse button, the left mouse button pans it and Reset view resets it. 
 <br>
@@ -68,7 +52,6 @@ If the interval chosen in step two is unbounded (this doesn’t happen very ofte
 <h4>Multiple solutions</h4>
 There are some reasons why the same set of points can lead to different ham sandwich cuts with this algorithm. The order in which the points are inserted matters. If the point sets are even, the algorithm deletes the first point in the set to make sure the median level is one-dimensional. The order also determines whether two lines that are parallel before simulation of simplicity meet at positive or negative infinity. The order of the points also determines the order of two crossings with the same x value before simulation of simplicity. This can change the decomposition into intervals and and the result of the algorithm.
 
-
 <h3>Authors</h3>
 Annette Karrer, Sarah Lutteropp, Fabian Stroh
 
@@ -107,8 +90,3 @@ Other online resources and applets
 <a name="ref8">[8]</a> G. Fredricks The ham sandwich Theorem
     An interactive applet.
  <a href="http://gfredericks.com/gfrlog/93">http://gfredericks.com/gfrlog/93</a>
-
-
-</body>
-</html>
-
