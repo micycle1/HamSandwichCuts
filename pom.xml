@@ -2,10 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>micycle.hamsancut</groupId>
-	<artifactId>hamsancut</artifactId>
+	<groupId>micycle.hscut</groupId>
+	<artifactId>hscut</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Ham Sandwich Cuts</name>
+	<name>Ham-Sandwich Cut</name>
+	<description>Ham-sandwich cuts of bichromatic point sets.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

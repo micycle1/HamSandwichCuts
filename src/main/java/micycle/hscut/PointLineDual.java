@@ -1,4 +1,4 @@
-package hamSanApp;
+package micycle.hscut;
 
 /**
  * This class represents a point/line (both) and has some helper functions.
@@ -98,7 +98,7 @@ public class PointLineDual {
 	 * @param k comparison line
 	 * @return 1 if above, -1 if below
 	 */
-	public static int op1naive(PointLineDual i, PointLineDual j, PointLineDual k) {
+	static int op1naive(PointLineDual i, PointLineDual j, PointLineDual k) {
 		// calculate the crossing point of i and j:
 		if (i.m != j.m) {
 			double x = (i.b - j.b) / (i.m - j.m);
@@ -127,11 +127,11 @@ public class PointLineDual {
 	 *         inverse result when comparing crossings at infinity).
 	 * @throws really shouldn't, only if you screw it up
 	 */
-	/*
-	 * Problem: What if i and j are parallel, and k and l are parallel, but i and l
-	 * are have different slopes then what order do we want at infinity?
-	 */
-	public static int op2naive(PointLineDual i, PointLineDual j, PointLineDual k, PointLineDual l) throws Exception {
+	static int op2naive(PointLineDual i, PointLineDual j, PointLineDual k, PointLineDual l) throws Exception {
+		/*
+		 * Problem: What if i and j are parallel, and k and l are parallel, but i and l
+		 * are have different slopes then what order do we want at infinity?
+		 */
 		// if ij crosses left of kl, return -1, if right return +1
 		if ((i.equals(k) && j.equals(l)) || (i.equals(l) && j.equals(k))) {
 			return 0;
@@ -263,14 +263,5 @@ public class PointLineDual {
 			throw new Exception("uh, something went wrong comparing");
 		}
 
-	}
-
-	/**
-	 * Third operation, we probably don't need it
-	 */
-	public static int op3naive(PointLineDual i, PointLineDual j, PointLineDual k, PointLineDual l, PointLineDual m) {
-		// sanity: make sure i,j,k,l pairwise distinct,
-		// even need to do? make sure we need this.
-		return 0;
 	}
 }

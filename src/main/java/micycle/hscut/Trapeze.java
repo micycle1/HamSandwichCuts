@@ -1,4 +1,4 @@
-package hamSanApp;
+package micycle.hscut;
 
 /**
  * Represents m trapezoid containing the blue median line located
