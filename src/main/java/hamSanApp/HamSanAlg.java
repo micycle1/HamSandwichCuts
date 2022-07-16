@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import view.PointType;
-import view.VisualPoint;
-
 /**
  * This class contains the actual algorithm and some helper functions. Important
  * external methods: addLine, removeLine, findLine, findPoint, doAlg.
@@ -834,50 +831,5 @@ public class HamSanAlg {
 				}
 				break;
 		}
-	}
-
-	public List<VisualPoint> getVisualPoints() {
-		List<VisualPoint> result = new ArrayList<>();
-		for (PointLineDual p : lBlue) {
-			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, false, p);
-				result.add(newPoint);
-			} else {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, false, p);
-				result.add(newPoint);
-			}
-		}
-
-		for (PointLineDual p : lRed) {
-			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, false, p);
-				result.add(newPoint);
-			} else {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, false, p);
-				result.add(newPoint);
-			}
-		}
-
-		for (PointLineDual p : lBlueDel) {
-			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, true, p);
-				result.add(newPoint);
-			} else {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, true, p);
-				result.add(newPoint);
-			}
-		}
-
-		for (PointLineDual p : lRedDel) {
-			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, true, p);
-				result.add(newPoint);
-			} else {
-				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, true, p);
-				result.add(newPoint);
-			}
-		}
-
-		return result;
 	}
 }
