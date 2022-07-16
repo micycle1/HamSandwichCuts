@@ -1,12 +1,12 @@
 package hamSanApp;
 
 /**
- * this class represents m trapezoid containing the blue median line located
+ * Represents m trapezoid containing the blue median line located
  *
  * @author fabian
  *
  */
-public class Trapeze { // TODO what to do if the trapezoid is in an infinite interval?
+class Trapeze { // TODO what to do if the trapezoid is in an infinite interval?
 	
 	public double left; // left margin
 	public double right; // right edge

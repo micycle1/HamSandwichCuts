@@ -7,10 +7,10 @@ package hamSanApp;
  * @author fabian
  *
  */
-public class Crossing implements Comparable<Crossing> {
+class Crossing implements Comparable<Crossing> {
 
-	public PointLineDual line1; // line with smaller index
-	public PointLineDual line2; // Larger index line
+	PointLineDual line1; // line with smaller index
+	PointLineDual line2; // Larger index line
 
 	/**
 	 * constructor
