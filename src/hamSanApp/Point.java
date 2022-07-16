@@ -75,21 +75,21 @@ public class Point {
 	/**
 	 * calculates a determinant. not important.
 	 */
-	public static double det3(double a11, double a12, double a13, double a21, double a22, double a23, double a31, double a32, double a33) {
+	private static double det3(double a11, double a12, double a13, double a21, double a22, double a23, double a31, double a32, double a33) {
 		return a11 * a22 * a33 + a12 * a23 * a31 + a13 * a21 * a32 - a11 * a23 * a32 - a12 * a21 * a33 - a13 * a22 * a31;
 	}
 
 	/**
 	 * calculates a determinant. not important.
 	 */
-	public static double det2(double a11, double a12, double a21, double a22) {
+	private static double det2(double a11, double a12, double a21, double a22) {
 		return a11 * a22 - a12 * a21;
 	}
 
 	/**
 	 * non-working version of operation 1. delete me.
 	 */
-	public static int op1(Point i, Point j, Point k) {
+	private static int op1(Point i, Point j, Point k) {
 		double Delta1;
 		if (i.i < j.i) {
 			Delta1 = det3(i.a, i.b, 1, j.a, j.b, 1, k.a, k.b, 1);
@@ -131,8 +131,8 @@ public class Point {
 			// -> handle
 			return 0;
 		} else {
-		// they don't cross
-		// -> handle
+			// they don't cross
+			// -> handle
 			return -2;
 		}
 	}
@@ -145,11 +145,12 @@ public class Point {
 	 * @throws really shouldn't, only if you screw it up
 	 */
 	// returns an even inverse result when comparing crossings at infinity.
-	// Problem: What if i and j are parallel, and k and l are parallel, but i and l are
+	// Problem: What if i and j are parallel, and k and l are parallel, but i and l
+	// are
 	// have different slopes
 	// then what order do we want at infinity?
 	public static int op2naive(Point i, Point j, Point k, Point l) throws Exception {
-	// if ij crosses left of kl, return -1, if right return +1
+		// if ij crosses left of kl, return -1, if right return +1
 		if ((i.equals(k) && j.equals(l)) || (i.equals(l) && j.equals(k))) {
 			return 0;
 		}
@@ -168,7 +169,8 @@ public class Point {
 				return -1;
 			} else { // Intersections are on top of each other
 				// find the smallest index of the four
-				// TODO: Possibly test whether treatment for only 3 different straight lines as input
+				// TODO: Possibly test whether treatment for only 3 different straight lines as
+				// input
 				// fits
 				// the smallest index occurs only once
 				int s = (int) Math.signum(x1);
@@ -292,11 +294,11 @@ public class Point {
 	}
 
 	/**
-	 * dritte operation, brauchen wir warscheinlich nicht
+	 * Third operation, we probably don't need it
 	 */
 	public static int op3naive(Point i, Point j, Point k, Point l, Point m) {
-// sanity: make sure i,j,k,l pairwise distinct,
-// even need to do? make sure we need this.
+		// sanity: make sure i,j,k,l pairwise distinct,
+		// even need to do? make sure we need this.
 		return 0;
 	}
 }

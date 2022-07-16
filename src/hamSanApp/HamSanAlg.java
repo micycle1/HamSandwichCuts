@@ -498,11 +498,10 @@ public class HamSanAlg {
 			return;
 		}
 		if (lBlue.size() == 0 && lRed.size() == 0) {
-			return; // nix zu tun!
+			return; // nothing to do!
 		}
 		switch (step) {
-
-			case 0 :
+			case 0 : // Initial situation
 				trapeze = null;
 				if (firstRun) {
 					// speichere Anfangskonstellation der Punkte ab
@@ -593,7 +592,7 @@ public class HamSanAlg {
 					solution = new Point(-c.crAt(), c.line1.eval(c.crAt()));
 					if (DEBUG) {
 						System.out.println(
-								"es gibt nur eine Kreuzung im Betrachteten Bereich zwischen roten und blauen Linien. es muss die Loesung sein");
+								"There is only one crossing in the considered area between red and blue lines. It must be the solution");
 					}
 					done = true;
 					return;
@@ -740,7 +739,7 @@ public class HamSanAlg {
 					System.out.println("Intervals divided!");
 				}
 				break;
-			case 1 :
+			case 1 : // Intervals Scheduled
 				// find strip with odd number of intersections by binary search:
 				boolean bluetop;
 				if (leftborder) {
@@ -778,7 +777,7 @@ public class HamSanAlg {
 						rightsetthistime = true;
 					} else if (bluetesttop == 0) { // we have a winner!
 						if (DEBUG) {
-							System.out.println("schnittpunkt zufaellig bei binaerer Suche gefunden!");
+							System.out.println("Intersection found by chance during binary search!");
 						}
 						done = true;
 						solution = new Point(-borders[testband], levelPos(borders[testband], true, levelBlue));
@@ -788,12 +787,11 @@ public class HamSanAlg {
 				}
 				step++;
 				if (DEBUG) {
-					System.out.println("Richtiges Intervall rausgesucht");
+					System.out.println("Correct interval selected");
 				}
 				break;
-			case 2 :
-
-				// grenzen nur setzen, falls wir wissen, dass da welche sind.
+			case 2 : // Correct interval selected
+				// only set limits if we know there are any.
 				if (leftborder && leftsetthistime) {
 					leftb = borders[minband];
 				}
@@ -808,14 +806,14 @@ public class HamSanAlg {
 					return;
 				}
 
-				// prÃ¼fe, ob Betrachtungsbereich nur Kreuzungen bei - inf oder + inf hat und
-				// berechne
-				// in diesem Fall die Vertikale Lösung
+				// check if scope only has crossings at - inf or + inf and
+				// calculate
+				// in this case the vertical solution
 				if ((!leftborder && leftmannyC) || (!rightborder && rightmannyC)) {
-					System.out.println("Sind im Fall, dass es links viele Kreuzungen bei - inf gibt");
+					System.out.println("These are in case there are many crossings on the left at - inf");
 					done = true;
 					verticalSol = true;
-					verticalcut();// hier wierd verticalSolPos berechnet
+					verticalcut();// verticalSolPos is calculated here
 					return;
 				}
 
@@ -891,11 +889,10 @@ public class HamSanAlg {
 				minband = 0;
 				maxband = 0;
 				break;
-			case 3 :
+			case 3 : // trapezoid constructed
 				step++;
 				break;
-			case 4 :
-
+			case 4 : // trapezoid constructed
 				// cut away lines, count and make sure levelB/R are correct:
 				int deleted = 0;
 				for (int i = 0; i < lBlue.size();) {
