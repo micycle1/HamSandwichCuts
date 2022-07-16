@@ -55,8 +55,8 @@ public class HamSanAlg {
 	boolean rightmannyC = false;// from more than (alpfa * Crossings.size()) crossings in the negative or
 	// positive infinity
 
-	private static final double alpha = 1.0d / 32.0d;
-	private static final double eps = 1.0d / 8.0d; // constants for the alg
+	private static final double ALPHA = 1.0d / 32.0d;
+	private static final double EPSILON = 1.0d / 8.0d; // constants for the alg
 
 	/**
 	 * Constructor, doesn't do anything special.
@@ -112,6 +112,10 @@ public class HamSanAlg {
 		return p;
 	}
 
+	public PointLineDual addPoint(double a, double b, boolean blue) {
+		return addLine(a, b, blue);
+	}
+
 	/**
 	 * Erase m line out of Blue and Red. only possible if the * algorithm has not
 	 * yet started.
@@ -138,58 +142,6 @@ public class HamSanAlg {
 		if (lRed.remove(l)) {
 			lRedDel.add(l);
 		}
-	}
-
-	/**
-	 * Function that returns m point near position (x,y).
-	 * 
-	 * @param tolerance how far (x,y) can be from the point
-	 * @return the dot
-	 */
-	public PointLineDual findPoint(double x, double y, double tolerance) {
-		PointLineDual best = null;
-		double bestdist = 9999;
-		for (PointLineDual test : lBlue) {
-			double dist = Math.sqrt((test.m - x) * (test.m - x) + (test.b - y) * (test.b - y));
-			if (dist < tolerance && dist < bestdist) {
-				best = test;
-				bestdist = dist;
-			}
-		}
-		for (PointLineDual test : lRed) {
-			double dist = Math.sqrt((test.m - x) * (test.m - x) + (test.b - y) * (test.b - y));
-			if (dist < tolerance && dist < bestdist) {
-				best = test;
-				bestdist = dist;
-			}
-		}
-		return best;
-	}
-
-	/**
-	 * Function that returns m straight line near position (x,y) is.
-	 *
-	 * @param tolerance how far (x,y) can be from the point;
-	 * @return the dot
-	 */
-	public PointLineDual findLine(double x, double y, double tolerance) {
-		PointLineDual best = null;
-		double bestdist = 9999;
-		for (PointLineDual test : lBlue) {
-			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.m));
-			if (dist < tolerance && dist < bestdist) {
-				best = test;
-				bestdist = dist;
-			}
-		}
-		for (PointLineDual test : lRed) {
-			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.m));
-			if (dist < tolerance && dist < bestdist) {
-				best = test;
-				bestdist = dist;
-			}
-		}
-		return best;
 	}
 
 	/**
@@ -261,7 +213,7 @@ public class HamSanAlg {
 	 *
 	 * @return true if yes
 	 */
-	public boolean blueTopLeft() { // TODO Testme
+	public boolean blueTopLeft() {
 		LineComparator2 c = new LineComparator2();
 
 		List<PointLineDual> blueLoc = new ArrayList<>(lBlue);
@@ -302,13 +254,13 @@ public class HamSanAlg {
 			if (DEBUG && verbose) {
 				System.out.println("algo is not done!");
 			}
-			return false; // haben noch keinen schnitt.
+			return false; // don't have a cut yet
 		}
-
 		if (!verticalSol && solution == null) {
 			return false;
 		}
-		double tol = 0.0000001; // tolerance
+		
+		final double tol = 0.0000001; // tolerance
 		if (verticalSol) {
 			int bleft = 0;
 			int bright = 0;
@@ -348,10 +300,10 @@ public class HamSanAlg {
 				}
 			}
 			if (verbose) {
+				System.out.println("There are " + bleft + " blue points left, " + bright + " right of m, total of "
+						+ (lBlue.size() + lBlueDel.size()));
 				System.out.println(
-						"There are " + bleft + " blue points left, " + bright + " right of m total of " + (lBlue.size() + lBlueDel.size()));
-				System.out.println(
-						"There are " + rleft + " red points left, " + rright + " right of m total of " + (lRed.size() + lRedDel.size()));
+						"There are " + rleft + " red points left, " + rright + " right of m, total,  of " + (lRed.size() + lRedDel.size()));
 			}
 
 			if (Math.max(bleft, bright) > (lBlue.size() + lBlueDel.size()) / 2) {
@@ -404,9 +356,9 @@ public class HamSanAlg {
 		}
 		if (verbose) {
 			System.out.println(
-					"There are " + bbelow + " blue points below, " + babove + " above of m total of " + (lBlue.size() + lBlueDel.size()));
+					"There are " + bbelow + " blue points below, " + babove + " above of m, total of " + (lBlue.size() + lBlueDel.size()));
 			System.out.println(
-					"There are " + rbelow + " red points below, " + rabove + " above of m total of " + (lRed.size() + lRedDel.size()));
+					"There are " + rbelow + " red points below, " + rabove + " above of m, total of " + (lRed.size() + lRedDel.size()));
 		}
 
 		if ((Math.max(bbelow, babove) > (lBlue.size() + lBlueDel.size()) / 2)
@@ -422,10 +374,12 @@ public class HamSanAlg {
 	 * probably want to further break this down into smaller ones Split steps.
 	 */
 	public boolean verticalcut() {
-		// In case solution is m crossing at infinity, the solution is one
-		// vertical line.
-		// Go through all intersections before index or after index and find the cut!
-		System.out.println("Are in case Hamsandwichcut is m vertical");
+		/*
+		 * In case solution is m crossing at infinity, the solution is one vertical
+		 * line. Go through all intersections before index or after index and find the
+		 * cut!
+		 */
+		System.out.println("Checking whether Hamsandwich Cut is vertical");
 		for (PointLineDual element : lBlue) {
 			verticalSolPos = element.m;
 			if (validSol(true)) {
@@ -570,12 +524,12 @@ public class HamSanAlg {
 				// sort them. crossings implements comparable.
 
 				Collections.sort(crossings);
-				// make stripes with at most alpha*(n choose 2) crossings m piece.
+				// make stripes with at most ALPHA*(n choose 2) crossings m piece.
 
 				minband = 0;
 				maxband = 0; // will be overwritten
 				int band = 1;
-				int bandsize = (int) (crossings.size() * alpha);
+				int bandsize = (int) (crossings.size() * ALPHA);
 				bandsize = Math.max(1, bandsize);
 				// here's how things are meant to be: all crossings at negInf are left of
 				// borders[band]
@@ -767,7 +721,7 @@ public class HamSanAlg {
 					return;
 				}
 
-				int delta = (int) Math.round(eps * lBlue.size());
+				int delta = (int) Math.round(EPSILON * lBlue.size());
 
 				int topLvl = levelBlue - delta;
 				int botLvl = levelBlue + delta;

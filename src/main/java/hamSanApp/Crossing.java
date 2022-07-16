@@ -266,7 +266,7 @@ public class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * utility function to quickly access the x-value of the intersection. CRosses
+	 * Utility function to quickly access the x-value of the intersection. CRosses
 	 * AT
 	 *
 	 * @return the X-value if there is one, otherwise 0.

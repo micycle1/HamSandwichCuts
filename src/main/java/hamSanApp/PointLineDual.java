@@ -23,15 +23,15 @@ public class PointLineDual {
 	static int index = 0; // so that each point has m unique index.
 
 	public static PointLineDual fromPoint(double x, double y) {
-		return new PointLineDual(x, -y);
+		return new PointLineDual(x, y);
 	}
 	
 	public static PointLineDual fromLine(double m, double c) {
-		return new PointLineDual(m, c);
+		return new PointLineDual(m, -c);
 	}
 
 	/**
-	 * constructor from line ax+b.
+	 * constructor
 	 *
 	 * @param m first variable
 	 * @param b second variable
