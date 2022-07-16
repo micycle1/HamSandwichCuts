@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class contains the actual algorithm and some helper functions. Important
  * external methods: addLine, removeLine, findLine, findPoint, doAlg.
@@ -12,6 +15,8 @@ import java.util.List;
  *
  */
 public class HamSanAlg {
+
+	private static final Logger logger = LoggerFactory.getLogger(HamSanAlg.class);
 
 	public List<PointLineDual> lBlue; // the blue lines taken into account by the algorithm are saved here
 	public List<PointLineDual> lRed; // the red lines taken into account by the algorithm are stored here
@@ -35,15 +40,17 @@ public class HamSanAlg {
 	// convention: borders[i] is the left edge of the i-th stripe and the
 	// strips are half open, left dot is inside.
 	public List<Crossing> crossings;// the crossings are stored here;
-	boolean DEBUG = true;
 	public Trapeze trapeze; // the trapezoid (to draw)
 	public int minband; //
 	public int maxband; // to search for binaries on the intervals (bundles)
-	public int step; // what step are we in?
-	// 0: Initial situation
-	// 1: Intervals Scheduled
-	// 2: Correct interval selected
-	// 3: trapezoid constructed
+
+	/*-
+	 * 0: Initial situation
+	 * 1: Intervals Scheduled
+	 * 2: Correct interval selected
+	 * 3: trapezoid constructed
+	 */
+	private int step; // what step are we in?
 
 	boolean leftsetthistime = false;
 	boolean rightsetthistime = false; // used for going from step 2 to 3.
@@ -85,7 +92,6 @@ public class HamSanAlg {
 		step = 0;
 		maxband = 0;
 		minband = 0;
-
 	}
 
 	/**
@@ -142,7 +148,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * outputs the y-coordinate of the level'th line from above at the x position
+	 * Outputs the y-coordinate of the level'th line from above at the x position
 	 * takes level values between 1 and lBlue.size()+1 or l.size()+1!
 	 *
 	 * @param x     the x coordinate
@@ -182,8 +188,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Helper function to find out if we consider an intersection have to. See if
-	 * the intersection is within the current viewing area is.
+	 * Helper function to find out if we have to consider an intersection.
 	 *
 	 * @param c the intersection in question
 	 * @return true if we need to consider the crossing.
@@ -205,8 +210,8 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Function that calculates whether the blue links in the unrestricted area
-	 * median line is above the red.
+	 * Calculates whether the blue links in the unrestricted area median line is
+	 * above the red.
 	 *
 	 * @return true if yes
 	 */
@@ -221,7 +226,7 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * returns the level-t highest slope of the red or blue line. Used for
+	 * Returns the level-t highest slope of the red or blue line. Used for
 	 * unrestricted trapezes.
 	 *
 	 * @param blue  the blue straights?
@@ -246,11 +251,9 @@ public class HamSanAlg {
 	 *
 	 * @return Yes if valid cut
 	 */
-	public boolean validSol(boolean verbose) {
+	public boolean validSol() {
 		if (!done) {
-			if (DEBUG && verbose) {
-				System.out.println("algo is not done!");
-			}
+			logger.warn("algo is not done!");
 			return false; // don't have a cut yet
 		}
 		if (!verticalSol && solution == null) {
@@ -296,12 +299,8 @@ public class HamSanAlg {
 					rleft++;
 				}
 			}
-			if (verbose) {
-				System.out.println("There are " + bleft + " blue points left, " + bright + " right of m, total of "
-						+ (lBlue.size() + lBlueDel.size()));
-				System.out.println(
-						"There are " + rleft + " red points left, " + rright + " right of m, total,  of " + (lRed.size() + lRedDel.size()));
-			}
+			logger.info("Blue: {} points left of the line; {} to the right; total={}", bleft, bright, lBlue.size() + lBlueDel.size());
+			logger.info("Red: {} points left of the line; {} to the right; total={}", rleft, rright, lRed.size() + lRedDel.size());
 
 			if (Math.max(bleft, bright) > (lBlue.size() + lBlueDel.size()) / 2) {
 				return false;
@@ -310,7 +309,6 @@ public class HamSanAlg {
 				return false;
 			}
 
-			// System.out.println("have found vertical solution");
 			return true;
 		}
 
@@ -351,12 +349,8 @@ public class HamSanAlg {
 				rbelow++;
 			}
 		}
-		if (verbose) {
-			System.out.println(
-					"There are " + bbelow + " blue points below, " + babove + " above of m, total of " + (lBlue.size() + lBlueDel.size()));
-			System.out.println(
-					"There are " + rbelow + " red points below, " + rabove + " above of m, total of " + (lRed.size() + lRedDel.size()));
-		}
+		logger.info("Blue: {} points below the line; {} above; total={}", babove, bbelow, lBlue.size() + lBlueDel.size());
+		logger.info("Red: {} points below the line; {} above; total={}", rbelow, rabove, lRed.size() + lRedDel.size());
 
 		if ((Math.max(bbelow, babove) > (lBlue.size() + lBlueDel.size()) / 2)
 				|| (Math.max(rbelow, rabove) > (lRed.size() + lRedDel.size()) / 2)) {
@@ -376,30 +370,24 @@ public class HamSanAlg {
 		 * line. Go through all intersections before index or after index and find the
 		 * cut!
 		 */
-		System.out.println("Checking whether Hamsandwich Cut is vertical");
+		logger.info("Checking whether Hamsandwich Cut is vertical");
 		for (PointLineDual element : lBlue) {
 			verticalSolPos = element.m;
-			if (validSol(true)) {
-				System.out.println("Vertical solution found through blue dot");
+			if (validSol()) {
+				logger.info("Vertical solution found through blue dot");
 				return true;
 			}
 		}
-		System.out.println("There is no vertical solution through m blue dot");
+		logger.info("There is no vertical solution through m blue dot");
 		for (PointLineDual element : lRed) {
 			verticalSolPos = element.m;
-			if (validSol(true)) {
-				System.out.println("Vertical solution found through red dot");
+			if (validSol()) {
+				logger.info("Vertical solution found through red dot");
 				return true;
 			}
-			System.out.println("There is no vertical solution at all");
+			logger.info("There is no vertical solution at all");
 		}
 		return false;
-	}
-
-	public void findCut() {
-		if (lBlue.isEmpty() && lRed.isEmpty()) {
-			return; // nothing to do!
-		}
 	}
 
 	private void init() {
@@ -441,9 +429,7 @@ public class HamSanAlg {
 			PointLineDual r = lRed.get(0);
 			// do we need m vertical line?
 			if (b.m == r.m) {
-				if (DEBUG) {
-					System.out.println("have exactly two parallel lines of different colors");
-				}
+				logger.debug("have exactly two parallel lines of different colors");
 				done = true;
 				verticalSol = true;
 				verticalSolPos = b.m;
@@ -485,9 +471,7 @@ public class HamSanAlg {
 		if (crossings.size() == 1) {
 			Crossing c = crossings.get(0);
 			solution = new PointLineDual(-c.crAt(), c.line1.eval(c.crAt()));
-			if (DEBUG) {
-				System.out.println("There is only one crossing in the considered area between red and blue lines. It must be the solution");
-			}
+			logger.debug("There is only one crossing in the considered area between red and blue lines. It must be the solution");
 			done = true;
 			return;
 		}
@@ -510,10 +494,9 @@ public class HamSanAlg {
 			}
 		}
 
-		// sort them. crossings implements comparable.
-		Collections.sort(crossings);
-		// make stripes with at most ALPHA*(n choose 2) crossings m piece.
+		Collections.sort(crossings); // sort them. crossings implements comparable.
 
+		// make stripes with at most ALPHA*(n choose 2) crossings m piece.
 		minband = 0;
 		maxband = 0; // will be overwritten
 		int band = 1;
@@ -528,36 +511,30 @@ public class HamSanAlg {
 		leftmannyC = false;// set to true if left or right border area at
 		// interval division
 		rightmannyC = false;// have more than bandsize crossings in negative/resp. positive infinity
-		if (DEBUG) {
-			System.out.println("Intervals are divided");
-		}
+		logger.debug("Intervals are divided");
 		for (int i = bandsize; i < crossings.size(); i += bandsize) {
 			// case that at current index i crossing is at infinity
 			if (crossings.get(i).atInf()) {
 				if (crossings.get(i).atNegInf()) { // case that first bandsize crossings are at negative infinity
 
-					// there are more than bandsize crossings at negative infinity, so increase
-					// first interval like this,
-					// that all crossings at negative infinity are included in it.
+					/*
+					 * there are more than bandsize crossings at negative infinity, so increase
+					 * first interval like this, so that all crossings at negative infinity are
+					 * included in it.
+					 */
 					leftmannyC = true;
-					if (DEBUG) {
-						System.out.println("have many crossings at negative infinity");
-					}
+					logger.debug("Have many crossings at negative infinity");
 					while (i < crossings.size() && crossings.get(i).atInf() && crossings.get(i).atNegInf()) {
 						i++;
 					}
 					/*
 					 * If there are only intersections in negative and positive infinity, then the
-					 * input from parallels Straight lines or from points with the same
-					 * x-coordinate. the vertical through all these points is the solution in this
-					 * case.
+					 * input is parallel straight lines or from points with the same x-coordinate.
+					 * The vertical through all these points is the solution in this case.
 					 */
 					if ((i == crossings.size()) || crossings.get(i).atInf() && !crossings.get(i).atNegInf()) {
-						if (DEBUG) {
-							System.out.println(
-									"Since all lines are parallel, we have " + "Entered points have the same x-coordinate. Therefore, "
-											+ "the result of m vertical through all points; " + "Case of many crossings at - Inf");
-						}
+						logger.debug(
+								"All lines are parallel (points have the same x-coordinate), so the result is a vertical through all points.");
 						done = true;
 						verticalSol = true;
 						verticalSolPos = lBlue.get(0).m;
@@ -573,25 +550,15 @@ public class HamSanAlg {
 						}
 					}
 					if (isparallel) {
-						if (DEBUG) {
-							System.out.println(
-									"Since all lines are parallel, we have " + "Entered points have the same x-coordinate. Therefore, "
-											+ "the result of m vertical through all points" + "in case concurrency is checked");
-						}
+						logger.debug(
+								"All lines are parallel (points have the same x-coordinate), so the result is a vertical through all points.");
 						done = true;
 						verticalSol = true;
 						verticalSolPos = lBlue.get(0).m;
 						return;
 					} else {
-						if (DEBUG) {
-							System.out.println("funny case, in which the crossing infinity appears in the first interval");
-							// since not all lines are parallel, there must be an intersection that isn't
-							// lies at infinity
-							// and is contained in the first itervall.
-							// So in this case we only get exactly two intervals!
-							System.out.println("have exactly two intervals. In the first interval there is at least "
-									+ "contain m crossing that is not at infinity");
-						}
+						logger.debug(
+								"Hit a funny case, in which we have exactly two intervals,. and in the first interval there is at least a crossing that is not at infinity");
 						rightmannyC = true;
 						while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
 							i--;
@@ -608,7 +575,7 @@ public class HamSanAlg {
 
 				else {// Don't have crossing at positive infinity at the beginning of the
 						// interval division
-					System.out.println("have many crossings in positive infinity");
+					logger.debug("Have many crossings in positive infinity");
 					rightmannyC = true;
 					while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
 						i--;
@@ -626,9 +593,7 @@ public class HamSanAlg {
 			band++;
 			maxband = band;
 		}
-		if (DEBUG) {
-			System.out.println("Intervals divided!");
-		}
+		logger.debug("Intervals divided!");
 	}
 
 	private void scheduleIntervals() {
@@ -637,9 +602,7 @@ public class HamSanAlg {
 		if (leftborder) {
 			int res = blueTop(leftb);
 			if (res == 0) {
-				if (DEBUG) {
-					System.out.println("schnittpunkt zufaellig bei binaerer Suche gefunden!");
-				}
+				logger.debug("Point of intersection accidentally found in a binary search!");
 				done = true;
 				solution = new PointLineDual(-leftb, levelPos(leftb, true, levelBlue));
 				return;
@@ -667,19 +630,15 @@ public class HamSanAlg {
 				maxband = testband;
 				rightborder = true;
 				rightsetthistime = true;
-			} else if (bluetesttop == 0) { // we have m winner!
-				if (DEBUG) {
-					System.out.println("Intersection found by chance during binary search!");
-				}
+			} else if (bluetesttop == 0) { // we have a winner!
+				logger.debug("Point of intersection accidentally found in a binary search!");
 				done = true;
 				solution = new PointLineDual(-borders[testband], levelPos(borders[testband], true, levelBlue));
 				return;
 			}
 
 		}
-		if (DEBUG) {
-			System.out.println("Correct interval selected");
-		}
+		logger.debug("Correct interval selected");
 	}
 
 	private void selectCorrectInterval() {
@@ -692,17 +651,15 @@ public class HamSanAlg {
 		}
 
 		if (!leftborder && !rightborder) {
-			if (DEBUG) {
-				System.out.println("nope, this shouldn't ever happen. no bounds were set. do we even have crossings?");
-			}
+			logger.error("no bounds were set. do we even have crossings?");
 			return;
 		}
 
-		// check if scope only has crossings at - inf or + inf and
-		// calculate
-		// in this case the vertical solution
+		/*
+		 * Check if scope only has crossings at - inf or + inf and calculate in case
+		 * this is the vertical solution.
+		 */
 		if ((!leftborder && leftmannyC) || (!rightborder && rightmannyC)) {
-			System.out.println("These are in case there are many crossings on the left at - inf");
 			done = true;
 			verticalSol = true;
 			verticalcut();// verticalSolPos is calculated here
@@ -715,68 +672,44 @@ public class HamSanAlg {
 		int botLvl = levelBlue + delta;
 		if (true) { // sanity check
 			if (levelBlue < 1 || levelBlue >= lBlue.size()) {
-				if (DEBUG) {
-					System.out.println("REALLY BAD ERROR: yeah, levelBlue is fubar. go home and try again.");
-				}
+				logger.error("levelBlue is fubar!");
 			}
 			if (topLvl < 1) {
-				if (DEBUG) {
-					System.out.println("toplvl to small: fixing");
-				}
+				logger.debug("toplvl too small: fixing");
 				topLvl = 1;
 			}
 			if (botLvl >= lBlue.size()) {
-				if (DEBUG) {
-					System.out.println("botlvl to big: fixing");
-				}
+				logger.debug("botlvl too big: fixing");
 				botLvl = lBlue.size();
 			}
 		}
 		if (!leftborder || !rightborder) {
-
-			if (!leftborder) { // nach rechts offen
+			if (!leftborder) { // open to the right
 				double tr = levelPos(rightb, true, topLvl);
 				double br = levelPos(rightb, true, botLvl);
 				double ts = getslope(true, topLvl);
 				double bs = getslope(true, botLvl);
 				trapeze = new Trapeze(true, rightb, tr, br, ts, bs);
-				if (DEBUG) {
-					System.out.println("making m trapeze open to the left:");
-				}
-				if (DEBUG) {
-					System.out.println("rightb: " + rightb + " tr: " + tr + " br: " + br + " ts: " + ts + " bs: " + bs);
-				}
+				logger.debug("Making a trapeze (open to the left) : rightb={}, tr={}, br={}, ts={}, bs={}", rightb, tr, br, ts, bs);
 
-			} else if (!rightborder) { // nach links offen
+			} else if (!rightborder) { // open to the left
 				double tl = levelPos(leftb, true, topLvl);
 				double bl = levelPos(leftb, true, botLvl);
 				double ts = getslope(true, lBlue.size() - topLvl);
 				double bs = getslope(true, lBlue.size() - botLvl);
 				trapeze = new Trapeze(false, leftb, tl, bl, ts, bs);
-				if (DEBUG) {
-					System.out.println("making m trapeze open to the right");
-				}
-				if (DEBUG) {
-					System.out.println("rightb: " + rightb + " tl: " + tl + " bl: " + bl + " ts: " + ts + " bs: " + bs);
-				}
+				logger.debug("Making a trapeze (open to the right) : rightb={}, tl={}, bl={}, ts={}, bs={}", rightb, tl, bl, ts, bs);
 			}
-
 		} else {
 			double tl = levelPos(leftb, true, topLvl);
 			double tr = levelPos(rightb, true, topLvl);
 			double bl = levelPos(leftb, true, botLvl);
 			double br = levelPos(rightb, true, botLvl);
-			if (DEBUG) {
-				System.out.println("lefftb:" + leftb + " rightb:" + rightb + " tl:" + tl + " bl:" + bl + " tr:" + tr + " br:" + br);
-				System.out.println("blue top at leftb: " + blueTop(leftb) + " blue top at rightb: " + blueTop(rightb));
-			}
 			trapeze = new Trapeze(leftb, tl, bl, rightb, tr, br);
 		}
 		step++;
 
-		if (DEBUG) {
-			System.out.println("Trapezoid constructed");
-		}
+		logger.debug("Trapezoid constructed");
 		borders = new double[64];
 		minband = 0;
 		maxband = 0;
@@ -811,14 +744,12 @@ public class HamSanAlg {
 		}
 		step = 0;
 
-		if (DEBUG) {
-			System.out.println(deleted + " Removed out-of-interval lines.");
-		}
+		logger.debug("Removed {} out-of-interval lines", deleted);
 		if (deleted == 0) { // ya done goof'd
 			done = true;
 		}
 	}
-	
+
 	public void process() {
 		while (!done) {
 			doAlg();
@@ -826,7 +757,6 @@ public class HamSanAlg {
 	}
 
 	private void doAlg() { // sets done to true iff it has found m solution
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		switch (step) {
 			case 0 : // Initial situation
 				init();

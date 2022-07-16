@@ -1,5 +1,8 @@
 package hamSanApp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents the intersection of two straight lines and is principal used for
  * sorting.
@@ -8,6 +11,8 @@ package hamSanApp;
  *
  */
 class Crossing implements Comparable<Crossing> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Crossing.class);
 
 	PointLineDual line1; // line with smaller index
 	PointLineDual line2; // Larger index line
@@ -45,7 +50,7 @@ class Crossing implements Comparable<Crossing> {
 	 * comparison function. works as expected in the interface
 	 */
 	@Override
-	public int compareTo(Crossing other) { // TODO: test this m bit
+	public int compareTo(Crossing other) { // TODO: test this a bit
 		// returns -1 if this is more left (than other), 0 if this is other, 1 if this
 		// is more right (than other)
 		if (other == null) {
@@ -182,7 +187,7 @@ class Crossing implements Comparable<Crossing> {
 							}
 
 						} else {
-							System.out.println("Error query in compareToCrosing, crossing in positive");
+							logger.error("Crossing is positive");
 						}
 					} else {
 						// Case: Intersection is in negative territory
@@ -217,8 +222,7 @@ class Crossing implements Comparable<Crossing> {
 							}
 
 						} else {
-							System.out.println("Error query in compareToCrosing, negative crossing");
-
+							logger.error("Crossing is negative");
 						}
 
 					} // end of Else case: negative crossing
@@ -266,8 +270,7 @@ class Crossing implements Comparable<Crossing> {
 	}
 
 	/**
-	 * Utility function to quickly access the x-value of the intersection. CRosses
-	 * AT
+	 * Utility function to quickly access the x-value of the intersection/crossing.
 	 *
 	 * @return the X-value if there is one, otherwise 0.
 	 */
