@@ -14,35 +14,37 @@ import org.slf4j.LoggerFactory;
  * @author fabian
  *
  */
-public class HamSanAlg {
+public class HamSandwichCutter {
 
-	private static final Logger logger = LoggerFactory.getLogger(HamSanAlg.class);
+	private static final Logger logger = LoggerFactory.getLogger(HamSandwichCutter.class);
 
 	public List<PointLineDual> lBlue; // the blue lines taken into account by the algorithm are saved here
 	public List<PointLineDual> lRed; // the red lines taken into account by the algorithm are stored here
 	private List<PointLineDual> lBlueDel; // Del for deleted
 	private List<PointLineDual> lRedDel; // the lines not taken into account are stored here
-	public boolean leftborder; //
-	public boolean rightborder; // bools that are true if the current scope is after
-	// is left/right constrained
-	public double leftb; //
-	public double rightb; // the left and right edges of the viewing area
-	int levelBlue; //
-	int levelRed; // how many lines from the top is the median line you are looking for?
-	boolean firstRun; // Has the algorithm ever run m bit (can we still use lines
-	// change?
-	public boolean done; // is the algorithm ready?
-	boolean colorSwap; // do we just have to draw the colors reversed?
+
 	public boolean verticalSol; // is the solution m vertical line?
 	public double verticalSolPos; // position of the vertical solution
 	public PointLineDual solution; // position of the non-vertical solution
-	public double[] borders; // positions of borders between stripes.
+
+	private boolean leftborder; //
+	private boolean rightborder; // bools that are true if the current scope is after
+	// is left/right constrained
+	private double leftb; //
+	private double rightb; // the left and right edges of the viewing area
+	private int levelBlue; //
+	private int levelRed; // how many lines from the top is the median line you are looking for?
+	private boolean firstRun; // Has the algorithm ever run m bit (can we still use lines
+	// change?
+	private boolean done; // is the algorithm ready?
+	private boolean colorSwap; // do we just have to draw the colors reversed?
+	private double[] borders; // positions of borders between stripes.
 	// convention: borders[i] is the left edge of the i-th stripe and the
 	// strips are half open, left dot is inside.
-	public List<Crossing> crossings;// the crossings are stored here;
-	public Trapeze trapeze; // the trapezoid (to draw)
-	public int minband; //
-	public int maxband; // to search for binaries on the intervals (bundles)
+	private List<Crossing> crossings;// the crossings are stored here;
+	private Trapeze trapeze; // the trapezoid (to draw)
+	private int minband; //
+	private int maxband; // to search for binaries on the intervals (bundles)
 
 	/*-
 	 * 0: Initial situation
@@ -52,46 +54,23 @@ public class HamSanAlg {
 	 */
 	private int step; // what step are we in?
 
-	boolean leftsetthistime = false;
-	boolean rightsetthistime = false; // used for going from step 2 to 3.
-	boolean leftmannyC = false;// set to true if left or right border area at
-	// interval division
-	boolean rightmannyC = false;// from more than (alpfa * Crossings.size()) crossings in the negative or
-	// positive infinity
+	private boolean leftsetthistime = false;
+	private boolean rightsetthistime = false; // used for going from step 2 to 3.
+	private boolean leftmannyC = false;// set to true if left or right border area at interval division
+	private boolean rightmannyC = false;// from more than (alpfa * Crossings.size()) crossings in the negative or
+										// positive infinity
 
 	private static final double ALPHA = 1.0d / 32.0d;
 	private static final double EPSILON = 1.0d / 8.0d; // constants for the alg
 
-	/**
-	 * Constructor, doesn't do anything special.
-	 */
-	public HamSanAlg() {
+	public HamSandwichCutter() {
 		initVariables();
 	}
 
-	/**
-	 * Sets all variables to start states.
-	 */
-	public void initVariables() {
-		lBlue = new ArrayList<>();
-		lRed = new ArrayList<>();
-		lBlueDel = new ArrayList<>();
-		lRedDel = new ArrayList<>();
-		leftborder = false;
-		rightborder = false;
-		leftb = 0;
-		rightb = 0;
-		firstRun = true;
-		done = false;
-		colorSwap = false;
-		solution = null;
-		verticalSol = false;
-		borders = new double[64];
-		crossings = new ArrayList<>();
-		trapeze = null;
-		step = 0;
-		maxband = 0;
-		minband = 0;
+	public HamSandwichCutter(List<PointLineDual> red, List<PointLineDual> blue) {
+		this();
+		lRed = new ArrayList<>(red); // copy list
+		lBlue = new ArrayList<>(blue); // copy list
 	}
 
 	/**
@@ -119,141 +98,20 @@ public class HamSanAlg {
 		return addLine(a, b, blue);
 	}
 
-	/**
-	 * Erase m line out of Blue and Red. only possible if the * algorithm has not
-	 * yet started.
-	 * 
-	 * @param l the line to delete
-	 */
-	public void removeLine(PointLineDual l) {
-		if (!firstRun) {
-			return;
-		}
-		lBlue.remove(l);
-		lRed.remove(l);
-	}
-
-	/**
-	 * Hide m line from the algorithm. it is then drawn separately.
-	 * 
-	 * @param l
-	 */
-	public void hideLine(PointLineDual l) {
-		if (lBlue.remove(l)) {
-			lBlueDel.add(l);
-		}
-		if (lRed.remove(l)) {
-			lRedDel.add(l);
+	public void process() {
+		while (!done) {
+			stepAlg();
 		}
 	}
 
 	/**
-	 * Outputs the y-coordinate of the level'th line from above at the x position
-	 * takes level values between 1 and lBlue.size()+1 or l.size()+1!
+	 * Checks if the cut is valid. Assumes {@link #process()} has been called.
 	 *
-	 * @param x     the x coordinate
-	 * @param blue  from the Blue or Red Lines?
-	 * @param level how many lines from the top?
-	 * @return the y value
+	 * @return true if cut is valid (divides the input in half)
 	 */
-	public double levelPos(double x, boolean blue, int level) {
-		LineComparator x_evaluation = new LineComparator(x);
-		List<PointLineDual> locList;
-		if (blue) {
-			locList = new ArrayList<>(lBlue);
-		} else {
-			locList = new ArrayList<>(lRed);
-		}
-		Collections.sort(locList, x_evaluation);
-		return locList.get(level - 1).eval(x);
-	}
-
-	/**
-	 * Is the blue median line higher than the red at this point?
-	 *
-	 * @param x the position
-	 * @return 1 if blue above, -1 if red, 0 if we have an intersection to have.
-	 */
-	public int blueTop(double x) {
-		// is the blue level higher than the red level at x?
-		double bluePos = levelPos(x, true, levelBlue);
-		double redPos = levelPos(x, false, levelRed);
-		if (bluePos > redPos) {
-			return 1;
-		}
-		if (bluePos < redPos) {
-			return -1;
-		}
-		return 0;
-	}
-
-	/**
-	 * Helper function to find out if we have to consider an intersection.
-	 *
-	 * @param c the intersection in question
-	 * @return true if we need to consider the crossing.
-	 */
-	public boolean inBorders(Crossing c) { // Don't know if commenting out this makes it work. huh
-		double tolerance = 0.00001;
-		if (c.atInf()) {
-			if (c.atNegInf() && leftborder) {
-				return false;
-			}
-			if (!c.atNegInf() && rightborder) {
-				return false;
-			}
-		}
-		if ((leftborder && c.crAt() < leftb - tolerance) || (rightborder && c.crAt() >= rightb + tolerance)) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Calculates whether the blue links in the unrestricted area median line is
-	 * above the red.
-	 *
-	 * @return true if yes
-	 */
-	public boolean blueTopLeft() {
-		LineComparator2 c = new LineComparator2();
-
-		List<PointLineDual> blueLoc = new ArrayList<>(lBlue);
-		List<PointLineDual> redLoc = new ArrayList<>(lRed);
-		Collections.sort(blueLoc, c);
-		Collections.sort(redLoc, c);
-		return 1 == c.compare(blueLoc.get(levelBlue - 1), redLoc.get(levelRed - 1));
-	}
-
-	/**
-	 * Returns the level-t highest slope of the red or blue line. Used for
-	 * unrestricted trapezes.
-	 *
-	 * @param blue  the blue straights?
-	 * @param level how many-biggest slope?
-	 * @return the slope
-	 */
-	public double getslope(boolean blue, int level) {
-		LineComparator2 c = new LineComparator2();
-		List<PointLineDual> col;
-		if (blue) {
-			col = new ArrayList<>(lBlue);
-		} else {
-			col = new ArrayList<>(lRed);
-		}
-		Collections.sort(col, c);
-		Collections.reverse(col);
-		return col.get(level - 1).m;
-	}
-
-	/**
-	 * Function that checks if m given cut is valid.
-	 *
-	 * @return Yes if valid cut
-	 */
-	public boolean validSol() {
+	public boolean isValid() {
 		if (!done) {
-			logger.warn("algo is not done!");
+			logger.warn("Not cut to check for validity!");
 			return false; // don't have a cut yet
 		}
 		if (!verticalSol && solution == null) {
@@ -359,35 +217,54 @@ public class HamSanAlg {
 
 		return true;
 	}
+	
 
 	/**
-	 * The actual algorithm. running this algorithm provides m Iteration step. We
-	 * probably want to further break this down into smaller ones Split steps.
+	 * Sets all variables to start states.
 	 */
-	public boolean verticalcut() {
-		/*
-		 * In case solution is m crossing at infinity, the solution is one vertical
-		 * line. Go through all intersections before index or after index and find the
-		 * cut!
-		 */
-		logger.info("Checking whether Hamsandwich Cut is vertical");
-		for (PointLineDual element : lBlue) {
-			verticalSolPos = element.m;
-			if (validSol()) {
-				logger.info("Vertical solution found through blue dot");
-				return true;
-			}
+	private void initVariables() {
+		lBlue = new ArrayList<>();
+		lRed = new ArrayList<>();
+		lBlueDel = new ArrayList<>();
+		lRedDel = new ArrayList<>();
+		leftborder = false;
+		rightborder = false;
+		leftb = 0;
+		rightb = 0;
+		firstRun = true;
+		done = false;
+		colorSwap = false;
+		solution = null;
+		verticalSol = false;
+		borders = new double[64];
+		crossings = new ArrayList<>();
+		trapeze = null;
+		step = 0;
+		maxband = 0;
+		minband = 0;
+	}
+
+	private void stepAlg() { // sets done to true when a solution is found
+		switch (step) {
+			case 0 : // Initial situation
+				init();
+				step++;
+				break;
+			case 1 : // Intervals Scheduled
+				scheduleIntervals();
+				step++;
+				break;
+			case 2 : // Correct interval selected
+				selectCorrectInterval();
+				step++;
+				break;
+			case 3 : // trapezoid constructed
+				step++;
+				break;
+			case 4 : // trapezoid constructed
+				cutAwayLines();
+				break;
 		}
-		logger.info("There is no vertical solution through m blue dot");
-		for (PointLineDual element : lRed) {
-			verticalSolPos = element.m;
-			if (validSol()) {
-				logger.info("Vertical solution found through red dot");
-				return true;
-			}
-			logger.info("There is no vertical solution at all");
-		}
-		return false;
 	}
 
 	private void init() {
@@ -508,8 +385,7 @@ public class HamSanAlg {
 		// crossings at real values
 		// are geq borders[i] and less than borders[i+1] for 1<=i<maxborders
 
-		leftmannyC = false;// set to true if left or right border area at
-		// interval division
+		leftmannyC = false;// set to true if left or right border area at interval division
 		rightmannyC = false;// have more than bandsize crossings in negative/resp. positive infinity
 		logger.debug("Intervals are divided");
 		for (int i = bandsize; i < crossings.size(); i += bandsize) {
@@ -518,7 +394,7 @@ public class HamSanAlg {
 				if (crossings.get(i).atNegInf()) { // case that first bandsize crossings are at negative infinity
 
 					/*
-					 * there are more than bandsize crossings at negative infinity, so increase
+					 * There are more than bandsize crossings at negative infinity, so increase
 					 * first interval like this, so that all crossings at negative infinity are
 					 * included in it.
 					 */
@@ -750,32 +626,146 @@ public class HamSanAlg {
 		}
 	}
 
-	public void process() {
-		while (!done) {
-			doAlg();
+	/**
+	 * Hide a line from the algorithm processing.
+	 * 
+	 * @param l
+	 */
+	private void hideLine(PointLineDual l) {
+		if (lBlue.remove(l)) {
+			lBlueDel.add(l);
+		}
+		if (lRed.remove(l)) {
+			lRedDel.add(l);
 		}
 	}
 
-	private void doAlg() { // sets done to true iff it has found m solution
-		switch (step) {
-			case 0 : // Initial situation
-				init();
-				step++;
-				break;
-			case 1 : // Intervals Scheduled
-				scheduleIntervals();
-				step++;
-				break;
-			case 2 : // Correct interval selected
-				selectCorrectInterval();
-				step++;
-				break;
-			case 3 : // trapezoid constructed
-				step++;
-				break;
-			case 4 : // trapezoid constructed
-				cutAwayLines();
-				break;
+	/**
+	 * Outputs the y-coordinate of the level'th line from above at the x position
+	 * takes level values between 1 and lBlue.size()+1 or l.size()+1!
+	 *
+	 * @param x     the x coordinate
+	 * @param blue  from the Blue or Red Lines?
+	 * @param level how many lines from the top?
+	 * @return the y value
+	 */
+	private double levelPos(double x, boolean blue, int level) {
+		LineComparator x_evaluation = new LineComparator(x);
+		List<PointLineDual> locList;
+		if (blue) {
+			locList = new ArrayList<>(lBlue);
+		} else {
+			locList = new ArrayList<>(lRed);
 		}
+		Collections.sort(locList, x_evaluation);
+		return locList.get(level - 1).eval(x);
+	}
+
+	/**
+	 * Is the blue median line higher than the red at this point?
+	 *
+	 * @param x the position
+	 * @return 1 if blue above, -1 if red, 0 if we have an intersection to have.
+	 */
+	private int blueTop(double x) {
+		// is the blue level higher than the red level at x?
+		double bluePos = levelPos(x, true, levelBlue);
+		double redPos = levelPos(x, false, levelRed);
+		if (bluePos > redPos) {
+			return 1;
+		}
+		if (bluePos < redPos) {
+			return -1;
+		}
+		return 0;
+	}
+
+	/**
+	 * Helper function to find out if we have to consider an intersection.
+	 *
+	 * @param c the intersection in question
+	 * @return true if we need to consider the crossing.
+	 */
+	private boolean inBorders(Crossing c) { // Don't know if commenting out this makes it work. huh
+		double tolerance = 0.00001;
+		if (c.atInf()) {
+			if (c.atNegInf() && leftborder) {
+				return false;
+			}
+			if (!c.atNegInf() && rightborder) {
+				return false;
+			}
+		}
+		if ((leftborder && c.crAt() < leftb - tolerance) || (rightborder && c.crAt() >= rightb + tolerance)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Calculates whether the blue links in the unrestricted area median line is
+	 * above the red.
+	 *
+	 * @return true if yes
+	 */
+	private boolean blueTopLeft() {
+		LineComparator2 c = new LineComparator2();
+
+		List<PointLineDual> blueLoc = new ArrayList<>(lBlue);
+		List<PointLineDual> redLoc = new ArrayList<>(lRed);
+		Collections.sort(blueLoc, c);
+		Collections.sort(redLoc, c);
+		return 1 == c.compare(blueLoc.get(levelBlue - 1), redLoc.get(levelRed - 1));
+	}
+
+	/**
+	 * Returns the level-t highest slope of the red or blue line. Used for
+	 * unrestricted trapezes.
+	 *
+	 * @param blue  the blue straights?
+	 * @param level how many-biggest slope?
+	 * @return the slope
+	 */
+	private double getslope(boolean blue, int level) {
+		LineComparator2 c = new LineComparator2();
+		List<PointLineDual> col;
+		if (blue) {
+			col = new ArrayList<>(lBlue);
+		} else {
+			col = new ArrayList<>(lRed);
+		}
+		Collections.sort(col, c);
+		Collections.reverse(col);
+		return col.get(level - 1).m;
+	}
+
+	/**
+	 * The actual algorithm. running this algorithm provides m Iteration step. We
+	 * probably want to further break this down into smaller ones Split steps.
+	 */
+	private boolean verticalcut() {
+		/*
+		 * In case solution is m crossing at infinity, the solution is one vertical
+		 * line. Go through all intersections before index or after index and find the
+		 * cut!
+		 */
+		logger.info("Checking whether Hamsandwich Cut is vertical");
+		for (PointLineDual element : lBlue) {
+			verticalSolPos = element.m;
+			if (isValid()) {
+				logger.info("Vertical solution found through blue dot");
+				return true;
+			}
+		}
+		logger.info("There is no vertical solution through m blue dot");
+		for (PointLineDual element : lRed) {
+			verticalSolPos = element.m;
+			if (isValid()) {
+				logger.info("Vertical solution found through red dot");
+				return true;
+			}
+			logger.info("There is no vertical solution at all");
+		}
+		return false;
 	}
 }

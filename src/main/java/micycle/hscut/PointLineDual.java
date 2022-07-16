@@ -36,7 +36,7 @@ public class PointLineDual {
 	 * @param m first variable
 	 * @param b second variable
 	 */
-	PointLineDual(double a, double b) {
+	public PointLineDual(double a, double b) {
 		this.m = a;
 		this.b = b;
 		i = PointLineDual.index;

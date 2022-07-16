@@ -9,9 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import micycle.hscut.HamSanAlg;
-
-class CutTests {
+class HSCutTests {
 
 	@BeforeEach
 	void before(TestInfo testInfo) {
@@ -25,23 +23,23 @@ class CutTests {
 
 	@Test
 	void testSimpleLineEquation() {
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 		h.addPoint(5, 1, false);
 		h.addPoint(-5, 1, true);
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 		assertEquals(0.0, h.solution.m + 0.0); // add 0.0 to handle signed zero
 		assertEquals(1, h.solution.b);
 
-		h = new HamSanAlg();
+		h = new HamSandwichCutter();
 		h.addPoint(1, 1, false);
 		h.addPoint(-1, -1, true);
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 		assertEquals(1, h.solution.m);
 		assertEquals(0, h.solution.b);
 	}
@@ -49,7 +47,7 @@ class CutTests {
 	@Test
 	void testVerticalSolution() {
 		double x = 7;
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 		h.addPoint(x, 5, false);
 		h.addPoint(x, 6, false);
 		h.addPoint(x, -5, true);
@@ -60,7 +58,7 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 		assertTrue(h.verticalSol);
 		assertEquals(x, h.verticalSolPos); // line x = x'
 	}
@@ -74,7 +72,7 @@ class CutTests {
 	 */
 	@Test
 	void testOneSided() {
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 
 		for (int i = -9; i < -4; i += 2) {
 			h.addPoint(i, i, true);
@@ -98,13 +96,13 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 	}
 
 	@Test
 	void testManyRandom() {
 		SplittableRandom r = new SplittableRandom(1337);
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 
 		for (int i = 0; i < 500; i++) {
 			h.addPoint(r.nextDouble(-1, 1), r.nextDouble(-1, 1), false);
@@ -113,13 +111,13 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 	}
 
 	@Test
 	void testUnevenRandom() {
 		SplittableRandom r = new SplittableRandom(13337);
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 
 		for (int i = 0; i < 500; i++) { // 500 red
 			h.addPoint(r.nextDouble(-1, 1), r.nextDouble(-1, 1), false);
@@ -131,12 +129,12 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 	}
 
 	@Test
 	void testOneColor() {
-		HamSanAlg h = new HamSanAlg();
+		HamSandwichCutter h = new HamSandwichCutter();
 
 		for (int i = 0; i < 500; i++) { // red
 			h.addPoint(Math.random(), Math.random(), false);
@@ -144,9 +142,9 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 
-		h = new HamSanAlg();
+		h = new HamSandwichCutter();
 
 		for (int i = 0; i < 500; i++) { // blue
 			h.addPoint(Math.random(), Math.random(), true);
@@ -154,7 +152,7 @@ class CutTests {
 
 		h.process();
 
-		assertTrue(h.validSol());
+		assertTrue(h.isValid());
 	}
 
 }
