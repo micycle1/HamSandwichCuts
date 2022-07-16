@@ -8,15 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class contains the actual algorithm and some helper functions. Important
- * external methods: addLine, removeLine, findLine, findPoint, doAlg.
+ * A class for Ham-sandwich cuts of point sets.
  * 
- * @author fabian
- *
+ * @author Fabian Stroh
+ * @author Michael Carleton
  */
-public class HamSandwichCutter {
+public class HamSandwichCut {
 
-	private static final Logger logger = LoggerFactory.getLogger(HamSandwichCutter.class);
+	private static final Logger logger = LoggerFactory.getLogger(HamSandwichCut.class);
 
 	public List<PointLineDual> lBlue; // the blue lines taken into account by the algorithm are saved here
 	public List<PointLineDual> lRed; // the red lines taken into account by the algorithm are stored here
@@ -26,6 +25,11 @@ public class HamSandwichCutter {
 	public boolean verticalSol; // is the solution m vertical line?
 	public double verticalSolPos; // position of the vertical solution
 	public PointLineDual solution; // position of the non-vertical solution
+
+	private List<PointLineDual> setA; // below / left
+	private List<PointLineDual> setADeleted;
+	private List<PointLineDual> setB;
+	private List<PointLineDual> setBDeleted;
 
 	private boolean leftborder; //
 	private boolean rightborder; // bools that are true if the current scope is after
@@ -63,13 +67,18 @@ public class HamSandwichCutter {
 	private static final double ALPHA = 1.0d / 32.0d;
 	private static final double EPSILON = 1.0d / 8.0d; // constants for the alg
 
-	public HamSandwichCutter() {
+	public HamSandwichCut() {
 		initVariables();
 	}
 
-	public HamSandwichCutter(List<PointLineDual> red, List<PointLineDual> blue) {
+	public HamSandwichCut(List<PointLineDual> red, List<PointLineDual> blue) {
 		this();
 		lRed = new ArrayList<>(red); // copy list
+		lBlue = new ArrayList<>(blue); // copy list
+	}
+	
+	public HamSandwichCut(List<PointLineDual> blue) {
+		this();
 		lBlue = new ArrayList<>(blue); // copy list
 	}
 
@@ -77,8 +86,8 @@ public class HamSandwichCutter {
 	 * Add lines in the form of two coordinates. Only possible if the Algorithm not
 	 * yet started.
 	 *
-	 * @param x    first
-	 * @param y    second coordinate
+	 * @param a    first
+	 * @param b    second coordinate
 	 * @param blue is it m blue line?
 	 */
 	public PointLineDual addLine(double a, double b, boolean blue) {
@@ -94,10 +103,13 @@ public class HamSandwichCutter {
 		return p;
 	}
 
-	public PointLineDual addPoint(double a, double b, boolean blue) {
-		return addLine(a, b, blue);
+	public PointLineDual addPoint(double x, double y, boolean blue) {
+		return addLine(x, y, blue);
 	}
 
+	/**
+	 * Run the Ham-sandwich cut algorithm on the input.
+	 */
 	public void process() {
 		while (!done) {
 			stepAlg();
@@ -217,7 +229,44 @@ public class HamSandwichCutter {
 
 		return true;
 	}
-	
+
+	/**
+	 * Get the set of points that lie below the cutting line.
+	 * 
+	 * @param includeDeleted
+	 * @return
+	 */
+	public List<PointLineDual> getParitionA(boolean includeDeleted) {
+		findParitions();
+
+		List<PointLineDual> out;
+		if (includeDeleted) {
+			out = new ArrayList<>(setA);
+			out.addAll(setADeleted);
+		} else {
+			out = setA;
+		}
+		return out;
+	}
+
+	/**
+	 * Get the set of points that lie above the cutting line.
+	 * 
+	 * @param includeDeleted
+	 * @return
+	 */
+	public List<PointLineDual> getParitionB(boolean includeDeleted) {
+		findParitions();
+
+		List<PointLineDual> out;
+		if (includeDeleted) {
+			out = new ArrayList<>(setB);
+			out.addAll(setBDeleted);
+		} else {
+			out = setB;
+		}
+		return out;
+	}
 
 	/**
 	 * Sets all variables to start states.
@@ -737,6 +786,52 @@ public class HamSandwichCutter {
 		Collections.sort(col, c);
 		Collections.reverse(col);
 		return col.get(level - 1).m;
+	}
+
+	/**
+	 * Find the two sets of points partitioned by the cut solution.
+	 */
+	private void findParitions() {
+		if (setA == null && done) {
+			setA = new ArrayList<>();
+			setADeleted = new ArrayList<>();
+			setB = new ArrayList<>();
+			setBDeleted = new ArrayList<>();
+
+			final double tol = 0.0000001; // tolerance
+			for (PointLineDual t : lBlue) {
+				if (solution.eval(t.m) + tol < t.b) {
+					setA.add(t);
+				}
+				if (solution.eval(t.m) - tol > t.b) {
+					setB.add(t);
+				}
+			}
+			for (PointLineDual t : lRed) {
+				if (solution.eval(t.m) + tol < t.b) {
+					setA.add(t);
+				}
+				if (solution.eval(t.m) - tol > t.b) {
+					setB.add(t);
+				}
+			}
+			for (PointLineDual t : lBlueDel) {
+				if (solution.eval(t.m) + tol < t.b) {
+					setADeleted.add(t);
+				}
+				if (solution.eval(t.m) - tol > t.b) {
+					setBDeleted.add(t);
+				}
+			}
+			for (PointLineDual t : lRedDel) {
+				if (solution.eval(t.m) + tol < t.b) {
+					setADeleted.add(t);
+				}
+				if (solution.eval(t.m) - tol > t.b) {
+					setBDeleted.add(t);
+				}
+			}
+		}
 	}
 
 	/**
