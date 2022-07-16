@@ -1,28 +1,45 @@
 package hamSanApp;
 
 /**
- * This class represents a point/line (both) and has some helper functions
- *
+ * This class represents a point/line (both) and has some helper functions.
+ * <p>
+ * The duality transform is defined by:
+ * <ul>
+ * <li>Point <i>(p<sub>x</sub>, p<sub>y</sub>)</i> --> <i>y=p<sub>x</sub>a −
+ * p<sub>y</sub></i></li>
+ * <li>Line <i>y = mx + c</i> --> <i>(m, -c)</i></li>
+ * </ul>
+ * The primal plane (how the points/lines are represented) of this class is the
+ * lines.
+ * 
  * @author fabian
  *
  */
-public class Point {
+public class PointLineDual {
 
-	public double a; // first variable
+	public double m; // first variable
 	public double b; // second variable
 	public final int i; // index
-	static int index = 0; // so that each point has a unique index.
+	static int index = 0; // so that each point has m unique index.
+
+	public static PointLineDual fromPoint(double x, double y) {
+		return new PointLineDual(x, -y);
+	}
+	
+	public static PointLineDual fromLine(double m, double c) {
+		return new PointLineDual(m, c);
+	}
 
 	/**
-	 * constructor
+	 * constructor from line ax+b.
 	 *
-	 * @param x first variable
-	 * @param y second variable
+	 * @param m first variable
+	 * @param b second variable
 	 */
-	Point(double x, double y) {
-		a = x;
-		b = y;
-		i = Point.index;
+	PointLineDual(double a, double b) {
+		this.m = a;
+		this.b = b;
+		i = PointLineDual.index;
 		index++;
 	}
 
@@ -31,31 +48,31 @@ public class Point {
 	 */
 	@Override
 	public String toString() {
-		return "a: " + this.a + " b: " + this.b + " i: " + this.i;
+		return "m: " + this.m + " b: " + this.b + " i: " + this.i;
 	}
 
 	/**
 	 * to output as a dot (not important, only for debugging purposes)
 	 */
 	public void repr_point() {
-		System.out.println("point at " + a + " " + b);
+		System.out.println("point: (" + m + ", " + -b + ")");
 	}
 
 	/**
 	 * to output as a straight line (not important, only for debugging purposes)
 	 */
 	public void repr_line() {
-		System.out.println("line: y= " + a + "x + " + b);
+		System.out.println("line: y = " + m + "x + " + b);
 	}
 
 	/**
-	 * evaluates the straight line at a point.
+	 * Evaluates the straight line at m point.
 	 *
 	 * @param x evaluation point
-	 * @return calculated y value
+	 * @return y value at x
 	 */
 	public double eval(double x) {
-		return a * x + b;
+		return m * x + b;
 	}
 
 	/**
@@ -65,50 +82,15 @@ public class Point {
 	 * @param other The other one right now
 	 * @return The x-coordinate of the cut
 	 */
-	public double cross(Point other) {
-		if (a == other.a) {
+	public double cross(PointLineDual other) {
+		if (m == other.m) {
 			return 0;
 		}
-		return (other.b - b) / (a - other.a);
+		return (other.b - b) / (m - other.m);
 	}
 
 	/**
-	 * calculates a determinant. not important.
-	 */
-	private static double det3(double a11, double a12, double a13, double a21, double a22, double a23, double a31, double a32, double a33) {
-		return a11 * a22 * a33 + a12 * a23 * a31 + a13 * a21 * a32 - a11 * a23 * a32 - a12 * a21 * a33 - a13 * a22 * a31;
-	}
-
-	/**
-	 * calculates a determinant. not important.
-	 */
-	private static double det2(double a11, double a12, double a21, double a22) {
-		return a11 * a22 - a12 * a21;
-	}
-
-	/**
-	 * non-working version of operation 1. delete me.
-	 */
-	private static int op1(Point i, Point j, Point k) {
-		double Delta1;
-		if (i.i < j.i) {
-			Delta1 = det3(i.a, i.b, 1, j.a, j.b, 1, k.a, k.b, 1);
-		} else {
-			Delta1 = det3(j.a, j.b, 1, i.a, i.b, 1, k.a, k.b, 1);
-		}
-
-		System.out.println("determinant evaluated to " + Delta1);
-		if (Delta1 > 0) {
-			return 1;
-		}
-		if (Delta1 < 0) {
-			return -1;
-		}
-		return 0;
-	}
-
-	/**
-	 * returns whether lines i and j intersect above line k or below is not fully
+	 * Returns whether lines i and j intersect above line k or below. Is not fully
 	 * implemented! (I think we need it too Not)
 	 *
 	 * @param i first line of intersection
@@ -116,12 +98,12 @@ public class Point {
 	 * @param k comparison line
 	 * @return 1 if above, -1 if below
 	 */
-	public static int op1naive(Point i, Point j, Point k) {
+	public static int op1naive(PointLineDual i, PointLineDual j, PointLineDual k) {
 		// calculate the crossing point of i and j:
-		if (i.a != j.a) {
-			double x = (i.b - j.b) / (i.a - j.a);
-			double y = i.a * x + i.b;
-			double diff = y - (k.a * x + k.b);
+		if (i.m != j.m) {
+			double x = (i.b - j.b) / (i.m - j.m);
+			double y = i.m * x + i.b;
+			double diff = y - (k.m * x + k.b);
 			if (diff > 0) {
 				return 1;
 			}
@@ -138,18 +120,18 @@ public class Point {
 	}
 
 	/**
-	 * computes whether i and j intersect to the left of k and l or not. i,j,k and l
+	 * Computes whether i and j intersect to the left of k and l or not. i,j,k and l
 	 * must differ!
 	 *
-	 * @return -1 if ij intersect to the left of kl, 1 otherwise
+	 * @return -1 if ij intersect to the left of kl, 1 otherwise. (returns an even
+	 *         inverse result when comparing crossings at infinity).
 	 * @throws really shouldn't, only if you screw it up
 	 */
-	// returns an even inverse result when comparing crossings at infinity.
-	// Problem: What if i and j are parallel, and k and l are parallel, but i and l
-	// are
-	// have different slopes
-	// then what order do we want at infinity?
-	public static int op2naive(Point i, Point j, Point k, Point l) throws Exception {
+	/*
+	 * Problem: What if i and j are parallel, and k and l are parallel, but i and l
+	 * are have different slopes then what order do we want at infinity?
+	 */
+	public static int op2naive(PointLineDual i, PointLineDual j, PointLineDual k, PointLineDual l) throws Exception {
 		// if ij crosses left of kl, return -1, if right return +1
 		if ((i.equals(k) && j.equals(l)) || (i.equals(l) && j.equals(k))) {
 			return 0;
@@ -158,8 +140,8 @@ public class Point {
 		if (i.equals(j) || k.equals(l)) {
 			throw new Exception("op2 was called with stupid arguments");
 		}
-		double diff1 = i.a - j.a;
-		double diff2 = k.a - l.a;
+		double diff1 = i.m - j.m;
+		double diff2 = k.m - l.m;
 		if (diff1 != 0 && diff2 != 0) { // have no crossings at infinity
 			double x1 = i.cross(j);
 			double x2 = k.cross(l);
@@ -202,8 +184,7 @@ public class Point {
 					} else {
 						return 1 * s;
 					}
-				} // Fall, dass sich nur drei Geraden schneiden und kleinster Index doppelt
-					// vorkommt
+				} // Case where only three lines intersect and the smallest index occurs twice
 				if (smallindex == i.i) {
 					return op2naive(j, i, k, l);
 				}
@@ -211,25 +192,16 @@ public class Point {
 					return op2naive(i, j, l, k);
 				}
 				if ((smallindex == j.i) && (j.i == k.i)) {
-					if ((diff1 < 0) && (diff2 < 0) || ((diff1 < 0) && (l.a - i.a < 0))) {
+					if ((diff1 < 0) && (diff2 < 0) || ((diff1 < 0) && (l.m - i.m < 0))) {
 						return -1 * s;
 					} else {
 						return 1 * s;
 					}
 				}
-				/*
-				 * 
-				 * }//Fall, dass sich nur drei Geraden schneiden und kleinster Index doppelt
-				 * vorkommt if (smallindex==i.i) {return op2naive(j,i,k,l);} if
-				 * (smallindex==j.i&& (j.i!=k.i)) {return op2naive(i,j,l,k);} if (
-				 * (smallindex==j.i)&& (j.i==k.i) ){ if ((diff1<0)&&(diff2<0)
-				 * ||((diff1<0)&&(l.a-i.a<0)) ){return -1*s;} else {return 1*s;} }
-				 */
-
 				throw new Exception("no smallest index found, this shouldn't happen. :(, x values were " + x1 + " and " + x2
 						+ " and our four lines were " + i + " " + j + " " + k + " " + l);
 			}
-		} // haben Kreuzungen im Unendlichen
+		} // have crossings at infinity
 		else {
 			if (diff1 != 0) {
 				if (k.i < l.i) {
@@ -257,7 +229,7 @@ public class Point {
 					return -1;
 				}
 			}
-// sanity:
+			// sanity:
 			if (diff1 == 0 && diff2 == 0) {
 				if ((i.i < j.i && i.i < k.i && i.i < l.i) || (j.i < i.i && j.i < k.i && j.i < l.i)) {
 					if (k.i < l.i) {
@@ -296,7 +268,7 @@ public class Point {
 	/**
 	 * Third operation, we probably don't need it
 	 */
-	public static int op3naive(Point i, Point j, Point k, Point l, Point m) {
+	public static int op3naive(PointLineDual i, PointLineDual j, PointLineDual k, PointLineDual l, PointLineDual m) {
 		// sanity: make sure i,j,k,l pairwise distinct,
 		// even need to do? make sure we need this.
 		return 0;

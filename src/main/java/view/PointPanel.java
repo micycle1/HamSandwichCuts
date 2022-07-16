@@ -143,8 +143,8 @@ public class PointPanel extends JPanel implements MouseListener, MouseMotionList
 
 				g.drawLine((int) xVal, 0, (int) xVal, this.getHeight());
 			} else {
-				double bMin = h.solution.a * xmin + h.solution.b;
-				double bMax = h.solution.a * xmax + h.solution.b;
+				double bMin = h.solution.m * xmin + h.solution.b;
+				double bMax = h.solution.m * xmax + h.solution.b;
 
 				double yMin = VisualPoint.bToY(bMin, ymin, ymax, this.getSize());
 				double yMax = VisualPoint.bToY(bMax, ymin, ymax, this.getSize());

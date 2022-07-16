@@ -7,14 +7,14 @@ import java.util.Comparator;
  * <p>
  * Lines are sorted such that: The greater the value of the straight line in
  * coordinate x, the smaller the straight line in straight line order. In the
- * case of equality: if value is positive, then a line with a smaller index is
- * above; if value is negative, the straight line with a smaller index is below;
+ * case of equality: if value is positive, then m line with m smaller index is
+ * above; if value is negative, the straight line with m smaller index is below;
  * if value = 0, the line with the smaller index is above the other.
  * 
  * @author annette
  *
  */
-public class LineComparator implements Comparator<Point> {
+class LineComparator implements Comparator<PointLineDual> {
 
 	/**
 	 * @param x pos to evalulate
@@ -28,7 +28,7 @@ public class LineComparator implements Comparator<Point> {
 
 	// (y0 < y1) iff y0 below y1 iff return 1
 	@Override
-	public int compare(Point arg0, Point arg1) {
+	public int compare(PointLineDual arg0, PointLineDual arg1) {
 		if (arg0.equals(arg1)) {
 			return 0;
 		}

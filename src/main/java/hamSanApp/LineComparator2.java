@@ -8,21 +8,21 @@ import java.util.Comparator;
  * @author fabian
  *
  */
-public class LineComparator2 implements Comparator<Point> {
+class LineComparator2 implements Comparator<PointLineDual> {
 
 	@Override
-	public int compare(Point x, Point y) {
+	public int compare(PointLineDual x, PointLineDual y) {
 		if (x.equals(y)) {
 			return 0;
 		}
-		if (x.a == y.a) {
+		if (x.m == y.m) {
 			if (x.i < y.i) {
 				return -1;
 			} else {
 				return 1;
 			}
 		}
-		if (x.a < y.a) {
+		if (x.m < y.m) {
 			return 1;
 		} else {
 			return -1;

@@ -9,13 +9,13 @@ package hamSanApp;
  */
 public class Crossing implements Comparable<Crossing> {
 
-	public Point line1; // line with smaller index
-	public Point line2; // Larger index line
+	public PointLineDual line1; // line with smaller index
+	public PointLineDual line2; // Larger index line
 
 	/**
 	 * constructor
 	 */
-	public Crossing(Point crossline1, Point crossline2) {
+	public Crossing(PointLineDual crossline1, PointLineDual crossline2) {
 		if (crossline1.i <= crossline2.i) {
 			line1 = crossline1;
 			line2 = crossline2;
@@ -45,7 +45,7 @@ public class Crossing implements Comparable<Crossing> {
 	 * comparison function. works as expected in the interface
 	 */
 	@Override
-	public int compareTo(Crossing other) { // TODO: test this a bit
+	public int compareTo(Crossing other) { // TODO: test this m bit
 		// returns -1 if this is more left (than other), 0 if this is other, 1 if this
 		// is more right (than other)
 		if (other == null) {
@@ -112,14 +112,14 @@ public class Crossing implements Comparable<Crossing> {
 					// Case: Intersection is to the right of zero or on the y-axis
 					if (this.crAt() >= 0) {
 						if (this.line1.i < other.line1.i) { // Smallest index pair is this for crossing pair
-							if (this.line1.a - this.line1.a > 0) { // Even with the smallest index has a larger slope
+							if (this.line1.m - this.line1.m > 0) { // Even with the smallest index has m larger slope
 								// Intersection this moves to the left
 								return -1;
 							} else {
 								return 1;
 							}
 						} else { // smallest index is other for crossing pair
-							if (other.line1.a - other.line1.a > 0) { // Even with the smallest index has a larger slope
+							if (other.line1.m - other.line1.m > 0) { // Even with the smallest index has m larger slope
 								// intersection other moves to the left
 								return 1;
 							} else {
@@ -129,14 +129,14 @@ public class Crossing implements Comparable<Crossing> {
 
 					} else { // Crosspoint is in the negative range
 						if (this.line1.i < other.line1.i) { // Smallest index pair is this for crossing pair
-							if (this.line1.a - this.line1.a > 0) { // Even with the smallest index has a larger slope
+							if (this.line1.m - this.line1.m > 0) { // Even with the smallest index has m larger slope
 								// Intersection this moves to the right
 								return 1;
 							} else {
 								return -1;
 							}
 						} else { // smallest index is other for crossing pair
-							if (other.line1.a - other.line1.a > 0) { // Even with the smallest index has a larger slope
+							if (other.line1.m - other.line1.m > 0) { // Even with the smallest index has m larger slope
 								// intersection other moves to the right
 								return -1;
 							} else {
@@ -153,8 +153,8 @@ public class Crossing implements Comparable<Crossing> {
 					// Case: Intersection is to the right of zero or on the y-axis
 					if (this.crAt() >= 0) {
 						// Even with the smallest index has the greatest slope
-						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
-							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+						if (this.line1.m - this.line2.m > 0 && this.line1.m - other.line2.m > 0) {
+							if (this.line2.m - other.line2.m > 0) { // Compare the slopes of the other two lines that don't match the
 								// have smallest index
 								return -1;
 							} else {
@@ -165,16 +165,16 @@ public class Crossing implements Comparable<Crossing> {
 							// lines(has middle
 							// Pitch)
 							// Just other.line2 is above this.line1
-						else if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a < 0) {
+						else if (this.line1.m - this.line2.m > 0 && this.line1.m - other.line2.m < 0) {
 							return -1;
 
 						} // Just other.line2 is below this.line1
-						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a > 0) {
+						else if (this.line1.m - this.line2.m < 0 && this.line1.m - other.line2.m > 0) {
 							return 1;
 						}
 						// Even with the smallest index has the smallest slope
-						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a < 0) {
-							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+						else if (this.line1.m - this.line2.m < 0 && this.line1.m - other.line2.m < 0) {
+							if (this.line2.m - other.line2.m > 0) { // Compare the slopes of the other two lines that don't match the
 								// have smallest index
 								return -1;
 							} else {
@@ -188,8 +188,8 @@ public class Crossing implements Comparable<Crossing> {
 						// Case: Intersection is in negative territory
 
 						// Even with the smallest index has the greatest slope
-						if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a > 0) {
-							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+						if (this.line1.m - this.line2.m > 0 && this.line1.m - other.line2.m > 0) {
+							if (this.line2.m - other.line2.m > 0) { // Compare the slopes of the other two lines that don't match the
 								// have smallest index
 								return 1;
 							} else {
@@ -200,16 +200,16 @@ public class Crossing implements Comparable<Crossing> {
 							// lines(has middle
 							// Pitch)
 							// Just other.line2 is above this.line1
-						else if (this.line1.a - this.line2.a > 0 && this.line1.a - other.line2.a < 0) {
+						else if (this.line1.m - this.line2.m > 0 && this.line1.m - other.line2.m < 0) {
 							return 1;
 
 						} // Just other.line2 is below this.line1
-						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a > 0) {
+						else if (this.line1.m - this.line2.m < 0 && this.line1.m - other.line2.m > 0) {
 							return -1;
 						}
 						// Even with the smallest index has the smallest slope
-						else if (this.line1.a - this.line2.a < 0 && this.line1.a - other.line2.a < 0) {
-							if (this.line2.a - other.line2.a > 0) { // Compare the slopes of the other two lines that don't match the
+						else if (this.line1.m - this.line2.m < 0 && this.line1.m - other.line2.m < 0) {
+							if (this.line2.m - other.line2.m > 0) { // Compare the slopes of the other two lines that don't match the
 								// have smallest index
 								return 1;
 							} else {
@@ -226,7 +226,7 @@ public class Crossing implements Comparable<Crossing> {
 				} // end crossing are formed by 3 straight lines
 			} // End : Intersections are on top of each other
 
-			// return (-1)* Point.op2naive(a, b, other.a, other.b);
+			// return (-1)* PointLineDual.op2naive(m, b, other.a, other.b);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -239,7 +239,7 @@ public class Crossing implements Comparable<Crossing> {
 	 * @return true if yes
 	 */
 	public boolean atInf() {
-		return line1.a == line2.a;
+		return line1.m == line2.m;
 	}
 
 	/**

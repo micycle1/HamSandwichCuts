@@ -16,12 +16,10 @@ import view.VisualPoint;
  */
 public class HamSanAlg {
 
-	public List<Point> lBlue; // the blue lines taken into account by the algorithm are saved here
-	public List<Point> lRed; // the red lines taken into account by the algorithm are stored here
-	public List<Point> lBlueDel; // Del for deleted
-	public List<Point> lRedDel; // the lines not taken into account are stored here
-	public List<Point> firstlRed;// Sets of points at the start of the algorithm
-	public List<Point> firstlBlue;
+	public List<PointLineDual> lBlue; // the blue lines taken into account by the algorithm are saved here
+	public List<PointLineDual> lRed; // the red lines taken into account by the algorithm are stored here
+	private List<PointLineDual> lBlueDel; // Del for deleted
+	private List<PointLineDual> lRedDel; // the lines not taken into account are stored here
 	public boolean leftborder; //
 	public boolean rightborder; // bools that are true if the current scope is after
 	// is left/right constrained
@@ -29,13 +27,13 @@ public class HamSanAlg {
 	public double rightb; // the left and right edges of the viewing area
 	int levelBlue; //
 	int levelRed; // how many lines from the top is the median line you are looking for?
-	boolean firstRun; // Has the algorithm ever run a bit (can we still use lines
+	boolean firstRun; // Has the algorithm ever run m bit (can we still use lines
 	// change?
 	public boolean done; // is the algorithm ready?
 	boolean colorSwap; // do we just have to draw the colors reversed?
-	public boolean verticalSol; // is the solution a vertical line?
+	public boolean verticalSol; // is the solution m vertical line?
 	public double verticalSolPos; // position of the vertical solution
-	public Point solution; // position of the non-vertical solution
+	public PointLineDual solution; // position of the non-vertical solution
 	public double[] borders; // positions of borders between stripes.
 	// convention: borders[i] is the left edge of the i-th stripe and the
 	// strips are half open, left dot is inside.
@@ -57,8 +55,8 @@ public class HamSanAlg {
 	boolean rightmannyC = false;// from more than (alpfa * Crossings.size()) crossings in the negative or
 	// positive infinity
 
-	final double alpha = 1.0d / 32.0d; //
-	final double eps = 1.0d / 8.0d; // constants for the alg
+	private static final double alpha = 1.0d / 32.0d;
+	private static final double eps = 1.0d / 8.0d; // constants for the alg
 
 	/**
 	 * Constructor, doesn't do anything special.
@@ -71,13 +69,10 @@ public class HamSanAlg {
 	 * Sets all variables to start states.
 	 */
 	public void init() {
-		lBlue = new ArrayList<Point>();
-		lRed = new ArrayList<Point>();
-		lBlueDel = new ArrayList<Point>();
-		lRedDel = new ArrayList<Point>();
-		firstlRed = new ArrayList<Point>();
-		firstlBlue = lRed;
-		firstlBlue = new ArrayList<Point>();
+		lBlue = new ArrayList<>();
+		lRed = new ArrayList<>();
+		lBlueDel = new ArrayList<>();
+		lRedDel = new ArrayList<>();
 		leftborder = false;
 		rightborder = false;
 		leftb = 0;
@@ -88,7 +83,7 @@ public class HamSanAlg {
 		solution = null;
 		verticalSol = false;
 		borders = new double[64];
-		crossings = new ArrayList<Crossing>();
+		crossings = new ArrayList<>();
 		trapeze = null;
 		step = 0;
 		maxband = 0;
@@ -102,13 +97,13 @@ public class HamSanAlg {
 	 *
 	 * @param x    first
 	 * @param y    second coordinate
-	 * @param blue is it a blue line?
+	 * @param blue is it m blue line?
 	 */
-	public Point addLine(double x, double y, boolean blue) {
+	public PointLineDual addLine(double a, double b, boolean blue) {
 		if (!firstRun) {
 			return null;
 		}
-		Point p = new Point(x, y);
+		PointLineDual p = new PointLineDual(a, b);
 		if (blue) {
 			lBlue.add(p);
 		} else {
@@ -118,12 +113,12 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Erase a line out of Blue and Red. only possible if the * algorithm has not
+	 * Erase m line out of Blue and Red. only possible if the * algorithm has not
 	 * yet started.
 	 * 
 	 * @param l the line to delete
 	 */
-	public void removeLine(Point l) {
+	public void removeLine(PointLineDual l) {
 		if (!firstRun) {
 			return;
 		}
@@ -132,11 +127,11 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Hide a line from the algorithm. it is then drawn separately.
+	 * Hide m line from the algorithm. it is then drawn separately.
 	 * 
 	 * @param l
 	 */
-	public void hideLine(Point l) {
+	public void hideLine(PointLineDual l) {
 		if (lBlue.remove(l)) {
 			lBlueDel.add(l);
 		}
@@ -146,23 +141,23 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Function that returns a point near position (x,y).
+	 * Function that returns m point near position (x,y).
 	 * 
 	 * @param tolerance how far (x,y) can be from the point
 	 * @return the dot
 	 */
-	public Point findPoint(double x, double y, double tolerance) {
-		Point best = null;
+	public PointLineDual findPoint(double x, double y, double tolerance) {
+		PointLineDual best = null;
 		double bestdist = 9999;
-		for (Point test : lBlue) {
-			double dist = Math.sqrt((test.a - x) * (test.a - x) + (test.b - y) * (test.b - y));
+		for (PointLineDual test : lBlue) {
+			double dist = Math.sqrt((test.m - x) * (test.m - x) + (test.b - y) * (test.b - y));
 			if (dist < tolerance && dist < bestdist) {
 				best = test;
 				bestdist = dist;
 			}
 		}
-		for (Point test : lRed) {
-			double dist = Math.sqrt((test.a - x) * (test.a - x) + (test.b - y) * (test.b - y));
+		for (PointLineDual test : lRed) {
+			double dist = Math.sqrt((test.m - x) * (test.m - x) + (test.b - y) * (test.b - y));
 			if (dist < tolerance && dist < bestdist) {
 				best = test;
 				bestdist = dist;
@@ -172,69 +167,29 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * Function that returns a straight line near position (x,y) is.
+	 * Function that returns m straight line near position (x,y) is.
 	 *
 	 * @param tolerance how far (x,y) can be from the point;
 	 * @return the dot
 	 */
-	public Point findLine(double x, double y, double tolerance) {
-		Point best = null;
+	public PointLineDual findLine(double x, double y, double tolerance) {
+		PointLineDual best = null;
 		double bestdist = 9999;
-		for (Point test : lBlue) {
-			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.a));
+		for (PointLineDual test : lBlue) {
+			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.m));
 			if (dist < tolerance && dist < bestdist) {
 				best = test;
 				bestdist = dist;
 			}
 		}
-		for (Point test : lRed) {
-			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.a));
+		for (PointLineDual test : lRed) {
+			double dist = (Math.abs(y - test.eval(x))) * Math.cos(Math.atan(test.m));
 			if (dist < tolerance && dist < bestdist) {
 				best = test;
 				bestdist = dist;
 			}
 		}
 		return best;
-	}
-
-	public boolean TestLineSort(double x, boolean blue) {
-		boolean r = true;
-		LineComparator x_evaluation = new LineComparator(x);
-		List<Point> locList;
-		if (blue) {
-			locList = new ArrayList<Point>(lBlue);
-		} else {
-			locList = new ArrayList<Point>(lRed);
-		}
-		Collections.sort(locList, x_evaluation);
-		for (int i = 0; i < locList.size(); i++) {
-			if (i + 1 != locList.size()) {
-				if ((locList.get(i).eval(x) == locList.get(i + 1).eval(x)) && (locList.get(i).i <= locList.get(i + 1).i)) {
-					if (x < 0) {
-						r = false;
-					}
-				} else if (locList.get(i).i > locList.get(i + 1).i) {
-					if (x >= 0) {
-						r = false;
-					}
-				}
-			}
-
-		}
-		return r;
-	}
-
-	public List<Point> TestLineSort2(double x, boolean blue) {
-		LineComparator x_evaluation = new LineComparator(x);
-		List<Point> locList;
-		if (blue) {
-			locList = new ArrayList<Point>(lBlue);
-		} else {
-			locList = new ArrayList<Point>(lRed);
-		}
-		Collections.sort(locList, x_evaluation);
-
-		return locList;
 	}
 
 	/**
@@ -248,11 +203,11 @@ public class HamSanAlg {
 	 */
 	public double levelPos(double x, boolean blue, int level) {
 		LineComparator x_evaluation = new LineComparator(x);
-		List<Point> locList;
+		List<PointLineDual> locList;
 		if (blue) {
-			locList = new ArrayList<Point>(lBlue);
+			locList = new ArrayList<>(lBlue);
 		} else {
-			locList = new ArrayList<Point>(lRed);
+			locList = new ArrayList<>(lRed);
 		}
 		Collections.sort(locList, x_evaluation);
 		return locList.get(level - 1).eval(x);
@@ -309,8 +264,8 @@ public class HamSanAlg {
 	public boolean blueTopLeft() { // TODO Testme
 		LineComparator2 c = new LineComparator2();
 
-		List<Point> blueLoc = new ArrayList<Point>(lBlue);
-		List<Point> redLoc = new ArrayList<Point>(lRed);
+		List<PointLineDual> blueLoc = new ArrayList<>(lBlue);
+		List<PointLineDual> redLoc = new ArrayList<>(lRed);
 		Collections.sort(blueLoc, c);
 		Collections.sort(redLoc, c);
 		return 1 == c.compare(blueLoc.get(levelBlue - 1), redLoc.get(levelRed - 1));
@@ -326,19 +281,19 @@ public class HamSanAlg {
 	 */
 	public double getslope(boolean blue, int level) {
 		LineComparator2 c = new LineComparator2();
-		List<Point> col;
+		List<PointLineDual> col;
 		if (blue) {
-			col = new ArrayList<Point>(lBlue);
+			col = new ArrayList<>(lBlue);
 		} else {
-			col = new ArrayList<Point>(lRed);
+			col = new ArrayList<>(lRed);
 		}
 		Collections.sort(col, c);
 		Collections.reverse(col);
-		return col.get(level - 1).a;
+		return col.get(level - 1).m;
 	}
 
 	/**
-	 * function that checks if a given cut is valid.
+	 * Function that checks if m given cut is valid.
 	 *
 	 * @return Yes if valid cut
 	 */
@@ -360,43 +315,43 @@ public class HamSanAlg {
 			int rleft = 0;
 			int rright = 0;
 
-			for (Point t : lBlue) {
-				if (verticalSolPos + tol < t.a) {
+			for (PointLineDual t : lBlue) {
+				if (verticalSolPos + tol < t.m) {
 					bright++;
 				}
-				if (verticalSolPos - tol > t.a) {
+				if (verticalSolPos - tol > t.m) {
 					bleft++;
 				}
 			}
-			for (Point t : lBlueDel) {
-				if (verticalSolPos + tol < t.a) {
+			for (PointLineDual t : lBlueDel) {
+				if (verticalSolPos + tol < t.m) {
 					bright++;
 				}
-				if (verticalSolPos - tol > t.a) {
+				if (verticalSolPos - tol > t.m) {
 					bleft++;
 				}
 			}
-			for (Point t : lRed) {
-				if (verticalSolPos + tol < t.a) {
+			for (PointLineDual t : lRed) {
+				if (verticalSolPos + tol < t.m) {
 					rright++;
 				}
-				if (verticalSolPos - tol > t.a) {
+				if (verticalSolPos - tol > t.m) {
 					rleft++;
 				}
 			}
-			for (Point t : lRedDel) {
-				if (verticalSolPos + tol < t.a) {
+			for (PointLineDual t : lRedDel) {
+				if (verticalSolPos + tol < t.m) {
 					rright++;
 				}
-				if (verticalSolPos - tol > t.a) {
+				if (verticalSolPos - tol > t.m) {
 					rleft++;
 				}
 			}
 			if (verbose) {
 				System.out.println(
-						"There are " + bleft + " blue points left, " + bright + " right of a total of " + (lBlue.size() + lBlueDel.size()));
+						"There are " + bleft + " blue points left, " + bright + " right of m total of " + (lBlue.size() + lBlueDel.size()));
 				System.out.println(
-						"There are " + rleft + " red points left, " + rright + " right of a total of " + (lRed.size() + lRedDel.size()));
+						"There are " + rleft + " red points left, " + rright + " right of m total of " + (lRed.size() + lRedDel.size()));
 			}
 
 			if (Math.max(bleft, bright) > (lBlue.size() + lBlueDel.size()) / 2) {
@@ -406,7 +361,7 @@ public class HamSanAlg {
 				return false;
 			}
 
-			// System.out.println("haben Vertikale Lösung gefunden");
+			// System.out.println("have found vertical solution");
 			return true;
 		}
 
@@ -415,43 +370,43 @@ public class HamSanAlg {
 		int rabove = 0; // red ..
 		int rbelow = 0;
 
-		for (Point t : lBlue) {
-			if (solution.eval(t.a) + tol < t.b) {
+		for (PointLineDual t : lBlue) {
+			if (solution.eval(t.m) + tol < t.b) {
 				babove++;
 			}
-			if (solution.eval(t.a) - tol > t.b) {
+			if (solution.eval(t.m) - tol > t.b) {
 				bbelow++;
 			}
 		}
-		for (Point t : lBlueDel) {
-			if (solution.eval(t.a) + tol < t.b) {
+		for (PointLineDual t : lBlueDel) {
+			if (solution.eval(t.m) + tol < t.b) {
 				babove++;
 			}
-			if (solution.eval(t.a) - tol > t.b) {
+			if (solution.eval(t.m) - tol > t.b) {
 				bbelow++;
 			}
 		}
-		for (Point t : lRed) {
-			if (solution.eval(t.a) + tol < t.b) {
+		for (PointLineDual t : lRed) {
+			if (solution.eval(t.m) + tol < t.b) {
 				rabove++;
 			}
-			if (solution.eval(t.a) - tol > t.b) {
+			if (solution.eval(t.m) - tol > t.b) {
 				rbelow++;
 			}
 		}
-		for (Point t : lRedDel) {
-			if (solution.eval(t.a) + tol < t.b) {
+		for (PointLineDual t : lRedDel) {
+			if (solution.eval(t.m) + tol < t.b) {
 				rabove++;
 			}
-			if (solution.eval(t.a) - tol > t.b) {
+			if (solution.eval(t.m) - tol > t.b) {
 				rbelow++;
 			}
 		}
 		if (verbose) {
 			System.out.println(
-					"There are " + bbelow + " blue points below, " + babove + " above of a total of " + (lBlue.size() + lBlueDel.size()));
+					"There are " + bbelow + " blue points below, " + babove + " above of m total of " + (lBlue.size() + lBlueDel.size()));
 			System.out.println(
-					"There are " + rbelow + " red points below, " + rabove + " above of a total of " + (lRed.size() + lRedDel.size()));
+					"There are " + rbelow + " red points below, " + rabove + " above of m total of " + (lRed.size() + lRedDel.size()));
 		}
 
 		if ((Math.max(bbelow, babove) > (lBlue.size() + lBlueDel.size()) / 2)
@@ -463,24 +418,24 @@ public class HamSanAlg {
 	}
 
 	/**
-	 * the actual algorithm. running this algorithm provides a Iteration step. We
+	 * The actual algorithm. running this algorithm provides m Iteration step. We
 	 * probably want to further break this down into smaller ones Split steps.
 	 */
-	// In case solution is a crossing at infinity, the solution is one
-	// vertical line.
-	// Go through all intersections before index or after index and find the cut!
 	public boolean verticalcut() {
-		System.out.println("Are in case Hamsandwichcut is a vertical");
-		for (Point element : lBlue) {
-			verticalSolPos = element.a;
+		// In case solution is m crossing at infinity, the solution is one
+		// vertical line.
+		// Go through all intersections before index or after index and find the cut!
+		System.out.println("Are in case Hamsandwichcut is m vertical");
+		for (PointLineDual element : lBlue) {
+			verticalSolPos = element.m;
 			if (validSol(true)) {
 				System.out.println("Vertical solution found through blue dot");
 				return true;
 			}
 		}
-		System.out.println("There is no vertical solution through a blue dot");
-		for (Point element : lRed) {
-			verticalSolPos = element.a;
+		System.out.println("There is no vertical solution through m blue dot");
+		for (PointLineDual element : lRed) {
+			verticalSolPos = element.m;
 			if (validSol(true)) {
 				System.out.println("Vertical solution found through red dot");
 				return true;
@@ -490,30 +445,26 @@ public class HamSanAlg {
 		return false;
 	}
 
-	public void doAlg() { // sets done to true iff it has found a solution
+	public void doAlg() { // sets done to true iff it has found m solution
 		if (done) {
 			if (validSol(true)) {
 				System.out.println("Yay it worked");
 			}
 			return;
 		}
-		if (lBlue.size() == 0 && lRed.size() == 0) {
+		if (lBlue.isEmpty() && lRed.isEmpty()) {
 			return; // nothing to do!
 		}
 		switch (step) {
 			case 0 : // Initial situation
 				trapeze = null;
 				if (firstRun) {
-					// speichere Anfangskonstellation der Punkte ab
-					firstlRed = new ArrayList<Point>(lRed);
-					firstlBlue = lRed;// Punktemengen zu Beginn des Algorithmus
-					firstlBlue = new ArrayList<Point>(lBlue);
-					// make sure that both sets are odd by deleting a point out of
+					// make sure that both sets are odd by deleting m point out of
 					// each set:
-					if (((lBlue.size() % 2) == 0) && lBlue.size() > 0) {
+					if (((lBlue.size() % 2) == 0) && !lBlue.isEmpty()) {
 						hideLine(lBlue.get(0));
 					}
-					if (((lRed.size() % 2) == 0) && lRed.size() > 0) {
+					if (((lRed.size() % 2) == 0) && !lRed.isEmpty()) {
 						hideLine(lRed.get(0));
 					}
 					// set the levelBlue and levelRed to the correct values:
@@ -525,14 +476,14 @@ public class HamSanAlg {
 
 				if (lBlue.isEmpty()) { // only red lines.
 					double rL = levelPos(0, false, (levelRed));
-					solution = new Point(0, rL);
+					solution = new PointLineDual(0, rL);
 					done = true;
 					firstRun = false;
 					return;
 				}
 				if (lRed.isEmpty()) { // only red lines.
 					double bL = levelPos(0, true, (levelBlue));
-					solution = new Point(0, bL);
+					solution = new PointLineDual(0, bL);
 					done = true;
 					firstRun = false;
 					return;
@@ -540,30 +491,30 @@ public class HamSanAlg {
 
 				// check if trivial solution:
 				if (lBlue.size() == 1 && lRed.size() == 1) {
-					Point b = lBlue.get(0);
-					Point r = lRed.get(0);
-					// do we need a vertical line?
-					if (b.a == r.a) {
+					PointLineDual b = lBlue.get(0);
+					PointLineDual r = lRed.get(0);
+					// do we need m vertical line?
+					if (b.m == r.m) {
 						if (DEBUG) {
 							System.out.println("have exactly two parallel lines of different colors");
 						}
 						done = true;
 						verticalSol = true;
-						verticalSolPos = b.a;
+						verticalSolPos = b.m;
 						return;
 
 					}
 					done = true;
 					// find intersection point and return that. done!
 					Crossing c = new Crossing(r, b);
-					solution = new Point(-c.crAt(), r.eval(c.crAt()));
+					solution = new PointLineDual(-c.crAt(), r.eval(c.crAt()));
 					return;
 				}
 
 				// swap the lines if blue is smaller:
 				if (lBlue.size() < lRed.size()) {
 					colorSwap = !colorSwap;
-					List<Point> temp = lBlue;
+					List<PointLineDual> temp = lBlue;
 					lBlue = lRed;
 					lRed = temp;
 					temp = lBlueDel;
@@ -575,7 +526,7 @@ public class HamSanAlg {
 				}
 
 				// generate all the crossings:
-				crossings = new ArrayList<Crossing>();
+				crossings = new ArrayList<>();
 
 				for (int i = 0; i < lBlue.size(); i++) { // blue-red
 					for (int j = 0; j < lRed.size(); j++) {
@@ -589,7 +540,7 @@ public class HamSanAlg {
 				if (crossings.size() == 1) {
 
 					Crossing c = crossings.get(0);
-					solution = new Point(-c.crAt(), c.line1.eval(c.crAt()));
+					solution = new PointLineDual(-c.crAt(), c.line1.eval(c.crAt()));
 					if (DEBUG) {
 						System.out.println(
 								"There is only one crossing in the considered area between red and blue lines. It must be the solution");
@@ -619,10 +570,10 @@ public class HamSanAlg {
 				// sort them. crossings implements comparable.
 
 				Collections.sort(crossings);
-				// make stripes with at most alpha*(n choose 2) crossings a piece.
+				// make stripes with at most alpha*(n choose 2) crossings m piece.
 
 				minband = 0;
-				maxband = 0; // wird überschrieben.
+				maxband = 0; // will be overwritten
 				int band = 1;
 				int bandsize = (int) (crossings.size() * alpha);
 				bandsize = Math.max(1, bandsize);
@@ -653,21 +604,21 @@ public class HamSanAlg {
 							while (i < crossings.size() && crossings.get(i).atInf() && crossings.get(i).atNegInf()) {
 								i++;
 							}
-							// If there are only intersections in negative and positive infinity, then the
-							// input from parallels
-							// Straight lines or from points with the same x-coordinate. the vertical
-							// through all
-							// these points
-							// is the solution in this case
+							/*
+							 * If there are only intersections in negative and positive infinity, then the
+							 * input from parallels Straight lines or from points with the same
+							 * x-coordinate. the vertical through all these points is the solution in this
+							 * case.
+							 */
 							if ((i == crossings.size()) || crossings.get(i).atInf() && !crossings.get(i).atNegInf()) {
 								if (DEBUG) {
 									System.out.println("Since all lines are parallel, we have "
 											+ "Entered points have the same x-coordinate. Therefore, "
-											+ "the result of a vertical through all points; " + "Case of many crossings at - Inf");
+											+ "the result of m vertical through all points; " + "Case of many crossings at - Inf");
 								}
 								done = true;
 								verticalSol = true;
-								verticalSolPos = lBlue.get(0).a;
+								verticalSolPos = lBlue.get(0).m;
 								return;
 							}
 						} // end: case that first bandsize crossings are in negative infinity
@@ -683,11 +634,11 @@ public class HamSanAlg {
 								if (DEBUG) {
 									System.out.println("Since all lines are parallel, we have "
 											+ "Entered points have the same x-coordinate. Therefore, "
-											+ "the result of a vertical through all points" + "in case concurrency is checked");
+											+ "the result of m vertical through all points" + "in case concurrency is checked");
 								}
 								done = true;
 								verticalSol = true;
-								verticalSolPos = lBlue.get(0).a;
+								verticalSolPos = lBlue.get(0).m;
 								return;
 							} else {
 								if (DEBUG) {
@@ -697,7 +648,7 @@ public class HamSanAlg {
 									// and is contained in the first itervall.
 									// So in this case we only get exactly two intervals!
 									System.out.println("have exactly two intervals. In the first interval there is at least "
-											+ "contain a crossing that is not at infinity");
+											+ "contain m crossing that is not at infinity");
 								}
 								rightmannyC = true;
 								while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
@@ -709,7 +660,7 @@ public class HamSanAlg {
 								break;
 							}
 
-						} // End of the case that at the beginning of the interval division we have a
+						} // End of the case that at the beginning of the interval division we have m
 							// crossing in the
 							// have positive infinity
 
@@ -719,15 +670,14 @@ public class HamSanAlg {
 							rightmannyC = true;
 							while (crossings.get(i).atInf() && !crossings.get(i).atNegInf() && i > 1) {
 								i--;
-
 							}
 
 							borders[band] = crossings.get(i).crAt();
 							band++;
-							maxband = band;// }
+							maxband = band;
 							break;
 						}
-					} // End if the current index has a crossing at infinity
+					} // End if the current index has m crossing at infinity
 						/////// Case when the current index has no crossing at infinity
 
 					borders[band] = crossings.get(i).crAt();
@@ -749,7 +699,7 @@ public class HamSanAlg {
 							System.out.println("schnittpunkt zufaellig bei binaerer Suche gefunden!");
 						}
 						done = true;
-						solution = new Point(-leftb, levelPos(leftb, true, levelBlue));
+						solution = new PointLineDual(-leftb, levelPos(leftb, true, levelBlue));
 						return;
 					}
 					if (res == 1) {
@@ -775,12 +725,12 @@ public class HamSanAlg {
 						maxband = testband;
 						rightborder = true;
 						rightsetthistime = true;
-					} else if (bluetesttop == 0) { // we have a winner!
+					} else if (bluetesttop == 0) { // we have m winner!
 						if (DEBUG) {
 							System.out.println("Intersection found by chance during binary search!");
 						}
 						done = true;
-						solution = new Point(-borders[testband], levelPos(borders[testband], true, levelBlue));
+						solution = new PointLineDual(-borders[testband], levelPos(borders[testband], true, levelBlue));
 						return;
 					}
 
@@ -849,7 +799,7 @@ public class HamSanAlg {
 						double bs = getslope(true, botLvl);
 						trapeze = new Trapeze(true, rightb, tr, br, ts, bs);
 						if (DEBUG) {
-							System.out.println("making a trapeze open to the left:");
+							System.out.println("making m trapeze open to the left:");
 						}
 						if (DEBUG) {
 							System.out.println("rightb: " + rightb + " tr: " + tr + " br: " + br + " ts: " + ts + " bs: " + bs);
@@ -862,7 +812,7 @@ public class HamSanAlg {
 						double bs = getslope(true, lBlue.size() - botLvl);
 						trapeze = new Trapeze(false, leftb, tl, bl, ts, bs);
 						if (DEBUG) {
-							System.out.println("making a trapeze open to the right");
+							System.out.println("making m trapeze open to the right");
 						}
 						if (DEBUG) {
 							System.out.println("rightb: " + rightb + " tl: " + tl + " bl: " + bl + " ts: " + ts + " bs: " + bs);
@@ -933,43 +883,43 @@ public class HamSanAlg {
 	}
 
 	public List<VisualPoint> getVisualPoints() {
-		List<VisualPoint> result = new ArrayList<VisualPoint>();
-		for (Point p : lBlue) {
+		List<VisualPoint> result = new ArrayList<>();
+		for (PointLineDual p : lBlue) {
 			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.RED, false, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, false, p);
 				result.add(newPoint);
 			} else {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.BLUE, false, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, false, p);
 				result.add(newPoint);
 			}
 		}
 
-		for (Point p : lRed) {
+		for (PointLineDual p : lRed) {
 			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.BLUE, false, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, false, p);
 				result.add(newPoint);
 			} else {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.RED, false, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, false, p);
 				result.add(newPoint);
 			}
 		}
 
-		for (Point p : lBlueDel) {
+		for (PointLineDual p : lBlueDel) {
 			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.RED, true, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, true, p);
 				result.add(newPoint);
 			} else {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.BLUE, true, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, true, p);
 				result.add(newPoint);
 			}
 		}
 
-		for (Point p : lRedDel) {
+		for (PointLineDual p : lRedDel) {
 			if (colorSwap) {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.BLUE, true, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.BLUE, true, p);
 				result.add(newPoint);
 			} else {
-				VisualPoint newPoint = new VisualPoint(p.a, p.b, PointType.RED, true, p);
+				VisualPoint newPoint = new VisualPoint(p.m, p.b, PointType.RED, true, p);
 				result.add(newPoint);
 			}
 		}

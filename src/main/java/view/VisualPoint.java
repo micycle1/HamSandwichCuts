@@ -15,7 +15,7 @@ public class VisualPoint {
 	private PointType type;
 	public boolean deleted; // points not used in the algorithm
 	public boolean highlighted;
-	private hamSanApp.Point myPoint;
+	private hamSanApp.PointLineDual myPoint;
 
 	public VisualPoint(double a, double b, PointType type, boolean deleted) {
 		this.a = a;
@@ -25,7 +25,7 @@ public class VisualPoint {
 		this.myPoint = null;
 	}
 
-	public VisualPoint(double a, double b, PointType type, boolean deleted, hamSanApp.Point p) {
+	public VisualPoint(double a, double b, PointType type, boolean deleted, hamSanApp.PointLineDual p) {
 		this.a = a;
 		this.b = b;
 		this.type = type;
@@ -33,11 +33,11 @@ public class VisualPoint {
 		this.myPoint = p;
 	}
 
-	public hamSanApp.Point getMyPoint() {
+	public hamSanApp.PointLineDual getMyPoint() {
 		return myPoint;
 	}
 
-	public void setMyPoint(hamSanApp.Point p) {
+	public void setMyPoint(hamSanApp.PointLineDual p) {
 		this.myPoint = p;
 	}
 
@@ -195,7 +195,7 @@ public class VisualPoint {
 		/*
 		 * double yscale = componentSize.getHeight() / (ymax - ymin);
 		 * 
-		 * double y1 = a*xmin + b; double y2 = a*xmax + b;
+		 * double y1 = m*xmin + b; double y2 = m*xmax + b;
 		 * 
 		 * double dy1 = ((-y1)+ ymax)*yscale; double dy2 = ((-y2)+ ymax)*yscale;
 		 */

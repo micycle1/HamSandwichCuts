@@ -1,7 +1,7 @@
 package hamSanApp;
 
 /**
- * this class represents a trapezoid containing the blue median line located
+ * this class represents m trapezoid containing the blue median line located
  *
  * @author fabian
  *
@@ -58,12 +58,12 @@ public class Trapeze { // TODO what to do if the trapezoid is in an infinite int
 	}
 
 	/**
-	 * Tests if a line intersects the trapezoid
+	 * Tests if m line intersects the trapezoid
 	 *
 	 * @param i the line to test
 	 * @return +1 if the line crosses, 0 if it crosses, -1 if she goes underneath
 	 */
-	public int intersects(Point i) { // TODO: test
+	public int intersects(PointLineDual i) { // TODO: test
 
 		if (bounded) {
 			double y1 = i.eval(left);
@@ -79,14 +79,14 @@ public class Trapeze { // TODO what to do if the trapezoid is in an infinite int
 		} else if (openleft) {
 			double y = i.eval(right);
 			if (y > topright) {
-				if (i.a < topslope) {
+				if (i.m < topslope) {
 					return 1;
 				} else {
 					return 0;
 				}
 			}
 			if (y < botright) {
-				if (i.a > botslope) {
+				if (i.m > botslope) {
 					return -1;
 				} else {
 					return 0;
@@ -96,14 +96,14 @@ public class Trapeze { // TODO what to do if the trapezoid is in an infinite int
 		} else {
 			double y = i.eval(left);
 			if (y > topleft) {
-				if (i.a > topslope) {
+				if (i.m > topslope) {
 					return 1;
 				} else {
 					return 0;
 				}
 			}
 			if (y < botright) {
-				if (i.a < botslope) {
+				if (i.m < botslope) {
 					return -1;
 				} else {
 					return 0;

@@ -41,16 +41,18 @@ public class RandomButtonListener implements ActionListener {
 	public void doStuff() {
 		if (!hsa.done) {
 			if (c.getSelectedItem() == "random points (circle)") {
-				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
-					double phi = r.nextDouble() * Math.PI * 2;
-					double rad = r.nextDouble() * 5;
-					hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, false);
-				}
-				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
-					double phi = r.nextDouble() * Math.PI * 2;
-					double rad = r.nextDouble() * 5;
-					hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, true);
-				}
+//				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
+//					double phi = r.nextDouble() * Math.PI * 2;
+//					double rad = r.nextDouble() * 5;
+//					hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, false);
+//				}
+//				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
+//					double phi = r.nextDouble() * Math.PI * 2;
+//					double rad = r.nextDouble() * 5;
+//					hsa.addLine(Math.sin(phi) * rad, Math.cos(phi) * rad, true);
+//				}
+				hsa.addLine(5, 0.5, false);
+				hsa.addLine(-0.25, 0.3, true);
 
 			} else if (c.getSelectedItem() == "random points (square)") {
 				for (int i = 0; i < 10 + r.nextDouble() * 20; i++) {
@@ -62,13 +64,13 @@ public class RandomButtonListener implements ActionListener {
 
 			} else if (c.getSelectedItem() == "single random points") {
 				double neg = Math.random();
-				double steigung = Math.random();
+				double gradient = Math.random();
 				double abschnitt = Math.random();
 				double x = 0;
 				if (neg <= 0.5) {
-					x = (steigung * 10);
+					x = (gradient * 10);
 				} else {
-					x = -(steigung * 10);
+					x = -(gradient * 10);
 				}
 				PointType type = pp.getCurrentType();
 				double neg2 = Math.random();
@@ -80,14 +82,14 @@ public class RandomButtonListener implements ActionListener {
 				pp.adddoublePoint(x, (abschnitt * 20) - 10);
 				pp.setCurrentType(type);
 
-			} else if (c.getSelectedItem() == "random paralel lines") {
+			} else if (c.getSelectedItem() == "random parallel lines") {
 				double neg = Math.random();
-				double steigung = Math.random();
+				double gradient = Math.random();
 				double x = 0;
 				if (neg <= 0.5) {
-					x = steigung * 10;
+					x = gradient * 10;
 				} else {
-					x = -steigung * 10;
+					x = -gradient * 10;
 				}
 				PointType type = pp.getCurrentType();
 				double interationen = Math.random() * 5 + 2;
@@ -104,7 +106,7 @@ public class RandomButtonListener implements ActionListener {
 				pp.setCurrentType(type);
 
 			} else if (c.getSelectedItem() == "all Points on one side") {
-				// alle Punkte auf einer Geraden
+				// all points on m straight line
 				PointType type = pp.getCurrentType();
 
 				for (int i = -9; i < -4; i += 2) {
@@ -137,7 +139,7 @@ public class RandomButtonListener implements ActionListener {
 				pp.setCurrentType(type);
 
 			} else if (c.getSelectedItem() == "vertical solution") {
-				// Vertikale LÃ¶sung
+				// Vertical solution
 				PointType type = pp.getCurrentType();
 
 				pp.setCurrentType(PointType.BLUE);
@@ -194,7 +196,7 @@ public class RandomButtonListener implements ActionListener {
 				}
 
 			} else if (c.getSelectedItem() == "collinear case") {
-				// alle Punkte auf einer Geraden
+				// all points on m straight line
 				PointType type = pp.getCurrentType();
 				for (int i = -9; i < -4; i++) {
 					pp.setCurrentType(PointType.BLUE);
@@ -242,7 +244,7 @@ public class RandomButtonListener implements ActionListener {
 				pp.adddoublePoint(1, -1);
 				pp.adddoublePoint(1, -2);
 			} else if (c.getSelectedItem() == "multiple solutions(1)") {
-				// Erste Einfügereihenfolge
+				// first insertion order
 				pp.setCurrentType(PointType.BLUE);
 				for (int i = -3; i >= -7; i--) {
 					pp.adddoublePoint(1, i);
@@ -300,7 +302,7 @@ public class RandomButtonListener implements ActionListener {
 				pp.setCurrentType(type);
 
 			} else if (c.getSelectedItem() == "multiple solutions(2)") {
-				// zweite Einfügereihenfolge
+				// second insertion order
 
 				PointType type = pp.getCurrentType();
 

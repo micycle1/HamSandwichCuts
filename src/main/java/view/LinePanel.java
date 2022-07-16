@@ -115,7 +115,7 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 					continue;
 				}
 				double crossingA = c.crAt();
-				double crossingB = c.line1.a * crossingA + c.line1.b;
+				double crossingB = c.line1.m * crossingA + c.line1.b;
 
 				Point2D.Double asAB = new Point2D.Double(crossingA, crossingB);
 				Point2D.Double asXY = VisualPoint.toXY(asAB, xmin, ymin, xmax, ymax, this.getSize());
@@ -131,7 +131,7 @@ public class LinePanel extends JPanel implements MouseMotionListener, MouseWheel
 
 		g.setColor(Color.magenta);
 		if (h.done && (h.solution != null)) {
-			Point2D.Double cutAB = new Point2D.Double(-h.solution.a, h.solution.b);
+			Point2D.Double cutAB = new Point2D.Double(-h.solution.m, h.solution.b);
 			Point2D.Double cutXY = VisualPoint.toXY(cutAB, xmin, ymin, xmax, ymax, this.getSize());
 			int x = (int) cutXY.x;
 			int y = (int) cutXY.y;
